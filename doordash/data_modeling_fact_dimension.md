@@ -2,6 +2,13 @@
 
 Let’s say you work for a delivery food company, XYZ. A customer can go to the XYZ app and place an order at their favorite restaurant for either pickup or delivery. Once that restaurant receives the order, they can choose to accept or deny the order. If accepted, then the XYZ app connects the restaurant with a nearby delivery man who comes, picks up the order, and delivers to food to the customer. Design a schema that takes this entire process into account. 
 
+# FAct vs Dimension table
+
+Fact Tables: These tables contain the quantitative data (or "facts") about a business process. They typically include numeric data points (like order amount, delivery time) and keys to related dimension tables. Fact tables are often large and contain data that varies over time.
+
+Dimension Tables: These tables include descriptive attributes (or "dimensions") related to the facts. They provide context to the data in the fact tables, like customer details, restaurant information, and delivery personnel profiles. Dimension tables are usually smaller and less likely to change frequently.
+
+
 # Solution: 
 
 Food Delivery Company Data Modeling

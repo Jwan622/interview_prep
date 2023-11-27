@@ -17,7 +17,7 @@ Physical data modeling is a process that involves the creation of diagrams, grap
 
 Examples of physical data modeling include entity-relationship diagrams (ERDs), data flow diagrams (DFDs), and Unified Modeling Language (UML) diagrams.
 
-![data_modeling](images/data_modeling.png)
+![data_modeling](../images/data_modeling.png)
 
 Q2. What is the difference between Conceptual, Logical, and Physical data models?
 A. The question is included in almost all data modeling interview questions. Hence, you can briefly define and support the terms with a real-life example.
