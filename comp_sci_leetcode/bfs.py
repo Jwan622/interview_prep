@@ -6,26 +6,29 @@ from collections import deque
 
 
 def bfs(graph, start):
-    visited, queue = set(), deque([start])
-    visited.add(start)
+    visited = list()
+    queue = deque([start])
 
     while queue:
-        vertex = queue.popleft()
-        print(vertex, end=" ")
+        print('queue: ', queue)
+        node = queue.popleft()
+        print('node: ', node)
 
-        for neighbor in graph[vertex]:
-            if neighbor not in visited:
-                visited.add(neighbor)
+        if node not in visited:
+            print('visiting =============> ', node)
+            visited.append(node)
+            for neighbor in graph[node]:
                 queue.append(neighbor)
 
+    return visited
 
 
-graph = {'A': set(['B', 'C']),
-         'B': set(['A', 'D', 'E']),
-         'C': set(['A', 'F']),
-         'D': set(['B']),
-         'E': set(['B', 'F']),
-         'F': set(['C', 'E'])}
+graph = {'A': ['B', 'C'],
+         'B': ['A', 'D', 'E'],
+         'C': ['A', 'F'],
+         'D': ['B'],
+         'E': ['B', 'F'],
+         'F': ['C', 'E']}
 
 
 # Example usage
