@@ -110,26 +110,27 @@ def merge_sort(list):
 
 def merge(left, right):
     result = []
-    i = 0
-    j = 0
+    pointer_for_left = 0
+    pointer_for_right = 0
     print('left in merge: ', left)
     print('right in merge: ', right)
-    while i < len(left) and j < len(right):
-        if left[i] <= right[j]:
-            result.append(left[i])
-            i += 1
+    while pointer_for_left < len(left) and pointer_for_right < len(right):
+        if left[pointer_for_left] <= right[pointer_for_right]:
+            result.append(left[pointer_for_left])
+            pointer_for_left += 1
         else:
-            result.append(right[j])
-            j += 1
+            result.append(right[pointer_for_right])
+            pointer_for_right += 1
 
-    print('i now: ', i)
-    print('j now: ', j)
-    print('whats to append on left: ', left[i:])
-    print('whats to append on right: ', right[j:])
-    result += left[i:]
-    result += right[j:]  # we can do this because the lists are already sorted so the remainder has to be greater than what's in result
+    print('pointer_for_left now: ', pointer_for_left)
+    print('pointer_for_right now: ', pointer_for_right)
+    print('whats to append on left: ', left[pointer_for_left:])
+    print('whats to append on right: ', right[pointer_for_right:])
+    result += left[pointer_for_left:]
+    result += right[pointer_for_right:]  # we can do this because the lists are already sorted so the remainder has to be greater than what's in result
     print('result: ', result)
     return result
+
 
 thing = [12,11,14,9,16]
 print(merge_sort(thing))
