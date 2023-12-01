@@ -93,22 +93,22 @@ Given two separate lists A and B ordered from least to greatest, construct a lis
 #     print("%d" % arr[i], end=" ")
 
 
-def merge_sort(list):
+def merge_sort(list): # this is the divide part (divide and conquer)
     print('list in merge sort: ', list)
     if len(list) <= 1:  # this allows us to return a single value for left and right below. once we sort something like 16,9 as 9,16, then we bubble up. then we can sort left, and then 9,16
-        return list
+        return list  # base case that keeps up from recursioning
 
     middle = len(list) // 2
     print('middle: ', middle)
     left = merge_sort(list[:middle])  # we sort this all the way before moving to right
-    right = merge_sort(list[middle:])
+    right = merge_sort(list[middle:]) # at some point you'll see left [14], right [9,16] and that's because we bubble up one recursion level.
     print('left: ', left)
     print('right: ', right)
 
     return merge(left, right)
 
 
-def merge(left, right):
+def merge(left, right):  # this is the sort/conquer part
     result = []
     pointer_for_left = 0
     pointer_for_right = 0
@@ -122,6 +122,7 @@ def merge(left, right):
             result.append(right[pointer_for_right])
             pointer_for_right += 1
 
+    print('intermediate result: ', result)
     print('pointer_for_left now: ', pointer_for_left)
     print('pointer_for_right now: ', pointer_for_right)
     print('whats to append on left: ', left[pointer_for_left:])
@@ -134,3 +135,18 @@ def merge(left, right):
 
 thing = [12,11,14,9,16]
 print(merge_sort(thing))
+
+
+"""
+It looks like this:
+                        [12,11,14,9,16]
+                    |                  |               
+                    |                  |
+                [12,11]             [14,9,16]
+             |           |        |              |
+             |           |        |              |
+         [12]--conquer---[11]    [14]--conquer-- [9,16]
+                                                |         | 
+                                               [9]--conquer--[16]         
+             
+"""
