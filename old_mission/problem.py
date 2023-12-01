@@ -69,8 +69,7 @@ def paper_cuttings(text_length, starting, ending):
 
         # Use parallel processing with imap to check non-overlapping pairs
         # Set the chunksize as per your requirement
-        chunksize = 10  # Example chunksize
-        non_overlapping_pairs = pool.imap_unordered(check_non_overlapping, pairs, chunksize)
+        non_overlapping_pairs = pool.imap_unordered(check_non_overlapping, pairs, chunksize=10)
         print('non overlapping pairs: ', non_overlapping_pairs)
         # Count non-overlapping pairs
         count = sum(non_overlapping_pairs)
@@ -93,6 +92,10 @@ my concern was that the pairs list wwas too big, so we changed it to a generator
 If the pairs list is too large to fit into memory, using a generator is a good approach to handle this memory issue. Generators allow you to iterate over data without the need to load everything into memory at once. However, there are some considerations to keep in mind when using generators with multiprocessing in Python.
 
 When you use a generator with Pool.map or Pool.imap, the generator is consumed in the main process to create chunks of data that are then sent to the worker processes. This means that the generator's advantage of low memory usage is partially lost, as chunks of data are still created and held in memory. The size of these chunks is controlled by the chunksize parameter in imap.
+
+Looking at the documentation for Pool.map it seems you're almost correct: the chunksize parameter will cause the iterable to be split into pieces of approximately that size, and each piece is submitted as a separate task.
+
+So in your example, yes, map will take the first 10 (approximately), submit it as a task for a single processor... then the next 10 will be submitted as another task, and so on. Note that it doesn't mean that this will make the processors alternate every 10 files, it's quite possible that processor #1 ends up getting 1-10 AND 11-20, and processor #2 gets 21-30 and 31-40.
 """
 
 
@@ -103,7 +106,6 @@ if __name__ == '__main__':
     starting = [3, 1, 2, 8, 8]
     ending = [5, 3, 7, 10, 10]
 
-    assert paper_cuttings(textLength, starting,
-                         ending) == 3, f"this does not equal 3:  {paper_cuttings(textLength, starting, ending)}"
+    assert paper_cuttings(textLength, starting, ending) == 3, f"this does not equal 3:  {paper_cuttings(textLength, starting, ending)}"
 
     print('ALL TESTS PASS')
