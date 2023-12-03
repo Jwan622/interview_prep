@@ -1,82 +1,80 @@
-# Function to find the partition position
-def partition(array, low, high):
-    # choose the rightmost element as pivot
-    print('low index: ', low)
-    print('high index: ', high)
-    pivot = array[high]
-    print('pivot value ', pivot)
-    # pointer for greater element
-    i = low - 1
-    print('i: ', i)
+# Here's a simple version of Quicksort with recursion
+# the algo works by finding a pivot (any random number but here we use the high index
+# we move all elements smaller than the pivot to the left
+# we move all elements bigger than the pivot to the right
+def quicksort(arr):
+    print('arr: ', arr)
+    # Base case: arrays with less than 2 elements are already sorted
+    if len(arr) == 1 or len(arr) == 0:
+        return arr
 
-    # traverse through all elements, compare each element with pivot
-    for j in range(low, high):
-        print('j: ', j)
-        if array[j] <= pivot:
-            print('insdie swap', array[j])
-            # If element smaller than or equal pivot is found swap it with the greater element pointed by i
-            i = i + 1
-            print('increment i: ', i)
-            # Swapping element at i with element at j
-            (array[i], array[j]) = (array[j], array[i])
+    # Choosing the first element as the pivot
+    pivot = arr[0] # pivot can be anything, let's pick the first element
+    print('pivot: ', pivot)
 
-    print('array: ', array)
-    # Swap the pivot element with an element greater than the pivot specified by i
-    (array[i + 1], array[high]) = (array[high], array[i + 1])
-    print('array after swap: ', array)
-    # Return the position from where partition is done
-    return i + 1
+    # Separating elements smaller and larger than the pivot
+    smaller = [i for i in arr[1:] if i <= pivot] # we use index 1 since we use the 0 index element as the pivot
+    print('smaller: ', smaller)
+    larger = [i for i in arr[1:] if i > pivot]
+    print('larger: ', larger)
+
+    # Recursive calls and concatenating results
+    return quicksort(smaller) + [pivot] + quicksort(larger)
 
 
-# function to perform quicksort
+# Example usage
+arr = [3, 6, 8, 10, 1, 2, 1]
+print("Sorted array:", quicksort(arr))
 
+# recursive tree looks like this:
+#  [3, 6, 8, 10, 1, 2, 1]
+# Left: [1,2,1]
+# Left: [1]
+# right: [2]
+# right: [6,8,10]
+# left: []
+# right: [8,10]
+# left: []
+# right: [10]
+# done
 
-def quickSort(array, low, high):
-    if low < high:
-        # Find pivot element such that
-        # element smaller than pivot are on the left
-        # element greater than pivot are on the right
-        pi = partition(array, low, high)
-        print('pi', pi)
-        # Recursive call on the left of pivot
-        quickSort(array, low, pi - 1)
+# here's a version with recursion that doesn't use the middle trick and sorts it in place of the original array
 
-        # Recursive call on the right of pivot
-        quickSort(array, pi + 1, high)
+# def quicksort(arr, low, high):
+#     if low < high:
+#         # Partition the array
+#         pi = partition(arr, low, high)
+#         print('pi: ', pi)
+#
+#         # Recursively sort the sub-arrays
+#         quicksort(arr, low, pi - 1)  # Before pi
+#         quicksort(arr, pi + 1, high)  # After pi
+#
+#
+# def partition(arr, low, high):
+#     print('arr: ', arr)
+#     # Pivot (Element to be placed at right position)
+#     pivot = arr[high]
+#     print('pivot: ', pivot)
+#     i = low - 1  # i is eventually used to figure out where to place pivot. we decrement because if we find an element smaller than pivot, we want to move i up 1
+#     print('i as  low - 1: ', i)
+#     for j in range(low, high):
+#         print('j: ', j)
+#         # If current element is smaller than or equal to pivot, swap i + 1 and j
+#         if arr[j] <= pivot:
+#             i = i + 1   # we put it at i + 1 so the smaller element arr[j] will be put at the left
+#             print('i as i + 1: ', i)
+#             arr[i], arr[j] = arr[j], arr[i]
+#     print('arr before swap: ', arr)
+#     arr[i + 1], arr[high] = arr[high], arr[i + 1]  # put the pivot at i + 1 since all the elements smaller than pivot were put at i + 1. we increment i again to ensure all the small elements are put at the pivot's left.
+#     print('pivot: ', pivot)
+#     print('arr after swap, partition should be correctly placed...everything bigger than pivot is to the right', arr)
+#     return i + 1
+#
+#
+# # Example usage
+# arr = [10, 7, 8, 9, 1, 5]
+# quicksort(arr, 0, len(arr) - 1)
+# print("Sorted array:", arr)
 
-
-data = [1, 7, 4, 1, 10, 9, -2]
-print("Unsorted Array")
-print(data)
-
-size = len(data)
-
-quickSort(data, 0, size - 1)
-
-print('Sorted Array in Ascending Order:')
-print(data)
-
-
-from threading import Thread
-
-counter = 0
-
-def writer1():
-    global counter
-    for _ in range(50):
-        counter += 1
-
-def writer2():
-    global counter
-    for _ in range(50):
-        counter += 1
-
-
-t1 = Thread(target=writer1, args=())
-t2 = Thread(target=writer2, args=())
-
-t1.start()
-t2.start()
-t1.join()
-t2.join()
-print(counter)
+# while swapping, if the array looks like [1, 5, 8, 9, 10, 7] and the pivot is 7, and if i starts at 1, we find that all the elements from low to high are greater than pivot, then we place the pivot at i + 1 which will ensure that all the greater elements are now to the right of the pivot and the new array looks like [1,5,7,8,9,10].
