@@ -36,15 +36,20 @@ The DFS function will:
 Check the current cell's boundaries and whether it's already visited.
 Recursively call DFS for all adjacent cells (up, down, left, right) that are part of the island ('1').
 """
-
 grid1 = [
+    ["1", "1", "0"],
+    ["0", "0", "0"],
+    ["0", "0", "0"]
+]
+
+grid2 = [
     ["1", "1", "1", "1", "0"],
     ["1", "1", "0", "1", "0"],
     ["1", "1", "0", "0", "0"],
     ["0", "0", "0", "0", "0"]
 ]
 
-grid2 = [
+grid3 = [
     ["1", "1", "0", "1", "0"],
     ["1", "1", "0", "1", "0"],
     ["1", "1", "0", "0", "0"],
@@ -56,32 +61,33 @@ def num_islands(grid):
     if not grid:
         return 0
 
-    def dfs(y_coord, x_coord): # this is depth first because even though there is no stack variable, we keep going depth/down an island block until we return.
-        print('this loop x and y: ', x_coord, y_coord)
-        if y_coord < 0 or x_coord < 0 or y_coord >= len(grid) or x_coord >= len(grid[0]) or grid[y_coord][x_coord] == '0': # off the map or off the island
+    def dfs(x_coord, y_coord): # this is depth first because even though there is no stack variable, we keep going depth/down an island block until we return. the point of this is to flip all connecting 1s to 0s and once we're done with that, we increment. That way when we encounter another island, we don't double count. It's actually kinda brilliant. we just go deeper (dfs) to connecting 1s and then look around it and flip to 0.
+        print('this loop x and y: ', y_coord, y_coord)
+        if x_coord < 0 or y_coord < 0 or y_coord >= len(grid) or x_coord >= len(grid[0]) or grid[y_coord][x_coord] == '0': # off the map or off the island
             print('in the return block', x_coord, y_coord)
             return
-        print('setting to 0: ', x_coord, y_coord)
-        grid[y_coord][x_coord] = '0'
+        print('setting to 0, x and then y: ', x_coord, y_coord)
+        grid[y_coord][x_coord] = '0'  # we set the initial 1 to 0 and then we start looking around.
         print("calling dfs(y_coord + 1, x_coord)")
-        dfs(y_coord + 1, x_coord)
+        dfs(x_coord + 1, y_coord)
         print("calling dfs(y_coord - 1, x_coord)")
-        dfs(y_coord - 1, x_coord)
+        dfs(x_coord - 1, y_coord)
         print("calling dfs(y_coord, x_coord + 1)")
-        dfs(y_coord, x_coord + 1)
+        dfs(x_coord, y_coord + 1)
         print("calling dfs(y_coord, x_coord - 1)")
-        dfs(y_coord, x_coord - 1)
+        dfs(x_coord, y_coord - 1)
 
     count = 0
     for y in range(len(grid)):
-        for x in range(len(grid[0])):
+        for x in range(len(grid[0])):  # 0 we use 0 because the first row has the same number of columns as all other rows
             if grid[y][x] == '1':  # if a 1, run dfs. Basically what this does is check all the up, down, left, and right around a 1 until it's exhausted and flipped to 0, and then we increment the count.
-                dfs(y, x)
-                print('COUNT INCREMENTING ==================>: ', x, y)
+                dfs(x, y)
+                print('COUNT INCREMENTING ==================>: ', x, y) # once we're done flipping all connecting 1s for an island, now we can increment. we flip all the 1st to 0s so we don't double count the next island
                 count += 1
 
     return count
 
 
-print("grid1: ", num_islands(grid1))
-print("grid2: ", num_islands(grid2))
+# print("grid1: ", num_islands(grid1))
+# print("grid2: ", num_islands(grid2))
+print("grid3: ", num_islands(grid3))
