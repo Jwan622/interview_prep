@@ -114,7 +114,7 @@ def merge(left, right):  # this is the sort/conquer part
     pointer_for_right = 0
     print('left in merge: ', left)
     print('right in merge: ', right)
-    while pointer_for_left < len(left) and pointer_for_right < len(right):
+    while pointer_for_left < len(left) and pointer_for_right < len(right): # basically we have a left and a right and we compare the lists and add the lesser to a new list and return that new list
         if left[pointer_for_left] <= right[pointer_for_right]:
             result.append(left[pointer_for_left])
             pointer_for_left += 1
