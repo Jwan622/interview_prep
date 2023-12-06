@@ -6,7 +6,7 @@ A few analysis to run when scoping a problem
     - ask about DAU and average request per day
     - Say you have 100m DAU, and say each user 1 query per day. What's the query per second?
     - 100m = 100 * 10^6
-    - 3600 seconds in an hour, 24 hours per day so 3600 * 24 seconds in a day. 
+    - 60 seconds in a minute, 60 minutes in an our, so 3600 seconds in an hour, 24 hours per day so 3600 * 24 seconds in a day. 
     so 100 * 10^6 / (3600 * 24) is about 100 * 10^6 / 10^5 approx is 100 * 10^1 = 1000 qps (query per second)
 
 That's how you do traffic analysis
@@ -49,7 +49,7 @@ Now move onto components
  - read heavy, less so write heavy.
  - we care more about availability above consistency. eventual consistency is fine. we need a super fast read function, to access our timeline in less than a second. similar to facebook, we care about speed from consistency perspective (if we tweet, someone else has to see it), but we care more about availability. really bad if someone can't access the network.
  - twitter uses in memory fanout. takes your tweet and recomputes the person who follows you home timeline. twitter uses redis. stored in RAM in redis.
-- in between updating the redis lists, we can reach out to a sql database to get the tweeter's followers. we get the follower's IDs and then use those IDs to update the appropriate redis lists. This occurs after the load balancer step.
+- in between updating the redis lists, we can reach out to a sql database to get the tweeter's followers. we get the follower's IDs and then use those IDs to update the appropriate redis lists. This occurrspecs after the load balancer step.
  - in redis, it's home timelines, lists of tweets for a user. every user has one list per redis machine. twitter has 3 redis machines. bob has his a list of tweets in redis, in every 3 redis machine (just for replication). this helps availability, eventually they will all have same state.
  - If the tweeter has 100 followers, 300 updates are made to the 3 redis instances. if followers are active, their redis list gets updated, 3 times.
  
