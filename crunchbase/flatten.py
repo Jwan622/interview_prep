@@ -28,30 +28,49 @@ to
 #             print('new_key_delimited: ', new_key_delimited)
 #             do_the_magic(flattened_list, nested_value, new_key_delimited) # this helper is called at end. we need to pass the return value that is being built on, and the new segment of the value that needs to be evaluated for base cases or a new list. the new_key needs to be passed too which is being built up.
 
-def flatten_helper(flattened_list, key, value_or_dict):
-    if not isinstance(value_or_dict, dict):  # base case
-        flattened_list[key] = value_or_dict
-    else:
-        for nested_key, nested_value in value_or_dict.items():
-            new_key = [key, nested_key]
-            new_key_delimited = "_".join(new_key)
-            print('new_key_delimited: ', new_key_delimited)
-            flatten_helper(flattened_list, new_key_delimited, nested_value)
+# def flatten_helper(flattened_list, key, value_or_dict):
+#     if not isinstance(value_or_dict, dict):  # base case
+#         flattened_list[key] = value_or_dict
+#     else:
+#         for nested_key, nested_value in value_or_dict.items():
+#             new_key = [key, nested_key]
+#             new_key_delimited = "_".join(new_key)
+#             print('new_key_delimited: ', new_key_delimited)
+#             flatten_helper(flattened_list, new_key_delimited, nested_value)
+#
+#
+# def flatten(input) -> dict:
+#     if input is None:
+#         return {}
+#     flattened_list = {}
+#
+#     for key, value in input.items():
+#         flatten_helper(flattened_list, key, value)
+#     return flattened_list
 
-
-def flatten(input) -> dict:
-    if input is None:
-        return {}
-    flattened_list = {}
-
-    for key, value in input.items():
-        flatten_helper(flattened_list, key, value)
-    return flattened_list
+# def flatten(input) -> dict:
+#     if input is None:
+#         return {}
+#     flattened_dic = {}
+#     for k, v in input.items():
+#         flatten_helper(flattened_dic, k, v)
+#
+#     return flattened_dic
+#
+#
+# def flatten_helper(flattened_dic, accum_key, value):
+#     if not isinstance(value, dict):
+#         flattened_dic[accum_key] = value
+#     else:
+#         for nested_key, nested_value in value.items():
+#             new_key = f"{accum_key}_{nested_key}"
+#             flatten_helper(flattened_dic, new_key, nested_value)
 
 
 # run some tests
 assert flatten({"a": "b"}) == {"a": "b"}, "test_naive_case did not pass"
 assert flatten({"a": "b", "c": {"d": "e"}}) == {"a": "b", "c_d": "e"}, "tests_2 did not pass"
+print('onwards to test 3')
 assert flatten({"a": "b", "c": {"d": "e", "f": "g"}}) == {"a": "b", "c_d": "e", "c_f": "g"}, "tests_3 did not pass"
 assert flatten({}) == {}, "tests_4 did not pass"
 

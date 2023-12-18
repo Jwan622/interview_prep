@@ -88,6 +88,6 @@ def num_islands(grid):
     return count
 
 
-# print("grid1: ", num_islands(grid1))
-# print("grid2: ", num_islands(grid2))
+print("grid1: ", num_islands(grid1))
+print("grid2: ", num_islands(grid2))
 print("grid3: ", num_islands(grid3))
