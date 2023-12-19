@@ -1,4 +1,4 @@
-# Data modeling interview
+_# Data modeling interview
 
 ## Conceptual Data Modeling
 Conceptual data modeling is creating a data model for a given system by analyzing and documenting the data objects and their relationships without regard to any particular database management system. It is a high-level data model that describes the structure of a business domain without concern for the physical implementation of the data.
@@ -26,4 +26,4 @@ Conceptual Data Models: They provide a high-level overview of the data and relat
 
 Logical Data Models: They describe the data structure and their relationships within a database. They include data elements and the relationships between them.
 
-Physical Data models: They are used to define the actual data structures of a database. They include the data types, field sizes, and indexes used in the database.
+Physical Data models: They are used to define the actual data structures of a database. They include the data types, field sizes, and indexes used in the database._
