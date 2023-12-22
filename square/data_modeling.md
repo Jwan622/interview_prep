@@ -33,6 +33,13 @@ Highly Normalized: Data in OLTP systems is often normalized up to the *third nor
 Objective: To optimize for transactional speed, consistency, and *minimize data redundancy*.
 Example: In a retail database, you might have separate tables for Customers, Orders, OrderDetails, Products, and Suppliers. Each table contains only the data specific to that entity and is linked to others via foreign keys. For instance, OrderDetails would reference Orders and Products to avoid duplication.
 
+### 3NF
+
+3NF ensures that non-key properties only depend on the primary key, removing redundancy and helping to create a well-organized and normalized relational database model.
+
+### Disadvantages of 3NF
+The disadvantage of the 3NF form design technique is that creating a database of smaller, normalized tables means that when you want to start performing analytics and business intelligence, you experience poor query performance because you have to join a bunch of smaller tables together to answer the questions you are seeking to address. The overhead of these “joins” greatly impacts database performance and results in long query times and sometimes the queries timeout altogether and don’t finish.  The other disadvantage with this design technique is that your database overwrites previous values with the most current version of a transaction, and thus it is hard to track changes over time, which is important for analytics.
+
 Dimensional Models:
 Less Normalized/Denormalized: Dimensional models, particularly those using a star schema, are denormalized.
 Objective: To optimize for read performance and simplicity in querying, often at the cost of some data redundancy.
@@ -109,3 +116,6 @@ Conceptual Data Models: They provide a high-level overview of the data and relat
 Logical Data Models: They describe the data structure and their relationships within a database. They include data elements and the relationships between them.
 
 Physical Data models: They are used to define the actual data structures of a database. They include the data types, field sizes, and indexes used in the database._
+
+
+
