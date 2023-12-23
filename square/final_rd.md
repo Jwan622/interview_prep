@@ -25,6 +25,8 @@ _Some suggestions_
 - case study: generate revenue report over time case study. How would you do this over time?
 - If you have a location data from merchant, merchant data might include name, contact information, address and payment data, basic payment data, how do you approach building the data pipeline and moving data into the data warehouse
 
+Answer in [link to answer](./final_rd_part_1.md)
+
 **Analytics Thinking (45min)**
 - case study of generating a data report based on given business requirements (figuring out the correct metrics, adding dimensions,
   (what kind of metrics do we need here? what do we want to look at?, come up with some points to make)

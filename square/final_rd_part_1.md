@@ -87,6 +87,95 @@ This case study highlights the critical questions and considerations before emba
 
 
 
+## ETL Development Lifecycle:
+
+Requirement Gathering: Start by understanding the business needs and data requirements. Work closely with stakeholders to define what data needs to be extracted, transformed, and loaded.
+
+Data Extraction:
+
+Identify the source systems where data resides, such as databases, APIs, flat files, or streaming platforms.
+Design data extraction processes to retrieve relevant data efficiently.
+Consider scheduling and data change detection mechanisms.
+Data Transformation:
+
+Cleanse and validate the extracted data to ensure data quality.
+Apply transformations like aggregations, joins, filtering, and enrichment to prepare the data for its destination.
+Implement business logic and data mapping as required.
+Data Loading:
+
+Determine the destination, which can be a data warehouse, database, or data lake.
+Load the transformed data into the destination using appropriate methods like batch or real-time loading.
+Handle data integrity and error handling during loading.
+Testing and Quality Assurance:
+
+Perform thorough testing, including unit testing for individual ETL components and integration testing for the entire ETL pipeline.
+Validate data accuracy and consistency throughout the process.
+Implement logging and monitoring for error detection.
+Deployment:
+
+Deploy ETL processes to the production environment, considering scalability and performance requirements.
+Set up scheduling and orchestration to automate ETL job execution.
+Maintenance and Monitoring:
+
+Continuously monitor ETL pipelines for data issues, errors, and performance bottlenecks.
+Handle updates to source systems and data schema changes gracefully.
+Maintain documentation and version control.
+ETL Optimization:
+
+Performance Tuning:
+
+Profile your ETL processes to identify performance bottlenecks. Tools like query optimizers and monitoring dashboards can help.
+Optimize SQL queries, indexing, and data loading strategies to reduce processing time.
+Parallel Processing:
+
+Implement parallel processing to distribute the workload across multiple processors or nodes.
+Use distributed computing frameworks like Apache Spark for large-scale data processing.
+Data Partitioning:
+
+Partition large datasets to improve query performance. Partitioning can be based on time, region, or other relevant criteria.
+Caching and Materialized Views:
+
+Use caching mechanisms or materialized views to store intermediate results, reducing redundant computations.
+ETL Code Refactoring:
+
+Regularly review and refactor ETL code to enhance maintainability and reduce complexity.
+Eliminate redundant transformations and optimize data flow.
+Debugging ETL Processes:
+
+Logging and Monitoring:
+
+Implement comprehensive logging to capture errors, warnings, and processing steps.
+Set up monitoring tools to alert you when issues occur.
+Data Profiling:
+
+Profile data at various stages of the ETL process to identify data quality problems or anomalies.
+Use data profiling tools to automate this process.
+
+
+
+
+## ETL vs ELT
+
+- ETL transforms data on a separate processing server, while ELT transforms data within the data warehouse itself.
+- ETL does not transfer raw data into the data warehouse, while ELT sends raw data directly to the data warehouse.
+
+### What is ELT
+
+Data is extracted from a source system, loaded into a destination system, and transformed inside the destination system. 
+
+### What is ETL
+Data is extracted from a source system, transformed on a secondary processing server, and loaded into a destination system. 
+
+### Benefits of ETL
+On the other hand, ETL is ideal for compute-intensive transformations, systems with legacy architectures, or data workflows that require manipulation before entering a target system, such as erasing personal identifying information (PII). Sometimes this happens unintentionally. But with ETL, you will reduce the risk of transferring non-compliant data. Why? Because of the data pipeline, meaning the data is cleaned and filtered before it leaves its initial destination.
+
+### Downsides of ELT
+
+- Upside you can chop and change schemas at will since the source data always exists. Downsides less focus on data modelling since everyone is just dumping data into the warehouse and its a free for all.
+- **practical example of ELT downsides, i've recently had to process 3.3Tb worth of data on snowflake in one table in one variant column. When it was made two years ago the original creator found it easier to just extract and dump the one stream into the table then create downstream tables later. This is all well and good initially but 2 years later the data grew and their query time grew with it. So it cost me 8 hours to deconstruct the variant type into a better model that can better server its downstream assets.
+
+
+##
 
 
 
