@@ -168,14 +168,129 @@ Data is extracted from a source system, transformed on a secondary processing se
 
 ### Benefits of ETL
 On the other hand, ETL is ideal for compute-intensive transformations, systems with legacy architectures, or data workflows that require manipulation before entering a target system, such as erasing personal identifying information (PII). Sometimes this happens unintentionally. But with ETL, you will reduce the risk of transferring non-compliant data. Why? Because of the data pipeline, meaning the data is cleaned and filtered before it leaves its initial destination.
+- The reasons we had ETL before was because storage particularly cloud storage was expensive so you had to limit the data you were writing in your warehouse to keep costs down. There was loads of benefits for this, the data models were usually well defined, things were built properly by necessity.
 
 ### Downsides of ELT
-
+- Enter cheaper storage in recent times and suddenly you got ELT. You extract the raw data from source and dump it into your datalake/dwh. 
 - Upside you can chop and change schemas at will since the source data always exists. Downsides less focus on data modelling since everyone is just dumping data into the warehouse and its a free for all.
 - **practical example of ELT downsides, i've recently had to process 3.3Tb worth of data on snowflake in one table in one variant column. When it was made two years ago the original creator found it easier to just extract and dump the one stream into the table then create downstream tables later. This is all well and good initially but 2 years later the data grew and their query time grew with it. So it cost me 8 hours to deconstruct the variant type into a better model that can better server its downstream assets.
 
-
+Most pipelines are EtLT. The t being "tweak" for some data cleaning, PII removals, etc. YMMV depending on use case.
 ##
 
 
 
+
+## Schema on read vs schema on write
+Schema-on-Write is associated with Relational Database Schema
+Databases have employed a Schema-on-Write paradigm for decades, that is, the schema/table structure is first defined up front and then the data is written to the said schema as a part of the write process. Once the data has been written to the schema it is then available for reading, as such it’s named Schema-on-Write.
+
+ETL from relational databases needs Schema-on-Write. The Schema-on-Write approach means the tables must be created first and schemas configured before data can be ingested. Relational databases have structured data whose structure is known in advance, so you can create tables accordingly, defining columns, data formats, column relationships at destination before the data is uploaded and available for analytical queries.
+
+Schema-on-Read is associated with the rise of Data Lakes
+Schema-on-Read has come about in conjunction with the rise of data lakes primarily for data science use cases and Machine Learning models. Here the raw data is first landed in its native form (structured and/or unstructured) with no imposed schema. Only once the data is read is the schema is applied, hence Schema-on-Read. Schema-on-Read is the opposite of Schema-in-Write. With the Schema-on-Read approach, the schema is created only when the data is read and not before data ingestion. Data schema are created while the ETL process is carried out. This enables raw, unstructured data to be stored in the database
+
+
+### Schema on read  
+
+The schema-on-read concept counterbalances the schema-on-write construct. The database schema is created when the data is read. The data structures are not applied or initiated before the data is ingested into the database; they are created during the ETL process. This enables unstructured data to be stored in the database.
+
+The primary reason for developing the schema-on-read principle is the exploding growth of unstructured data volumes and the high overhead involved during the schema-on-write process. 
+
+One example of a schema-on-read data loading process: Using Upsolver SQLake and  Amazon Athena to ingest and analyze raw data stored in an Amazon S3 data lake. Amazon Athena is a SQL engine that runs on top of the S3 data lake; you write SQL statements to query the data in the database:
+
+
+### How does schema on read even work?
+
+- The schema is inferred from the raw data, using SQlake to parse and stream the data and Amazon Glue Data Catalog to connect the metadata, schema, and data. 
+- Athena then runs a SQL query to analyze the data in the data lake.
+- As the query runs, SQLake ingests the data based on the schema-on-read principle. The ETL layer creates the database schema based on the schema-on-read.  The result: if your data lake contains live data, by using the schema-on-read construct new fields are added to the database schema as the data is loaded.
+
+In this context let’s revisit the example of the taxi:
+
+- The transactional data with details about each trip a taxi driver makes is loaded into an S3 data lake in near real-time. Most of the data is the same.
+- At some point new data is added to this feed – for example, weather details for each trip. Until this point, the software application that records trip data only recorded general weather information such as snow, rain, or sunshine. The new data includes the precipitation amount, the time of day it fell, and how long it lasted.
+- The schema-on-read process automatically creates new fields in the trip database table and ingests the data.
+
+### Benefit of schema on read
+
+Schema-on-Read is much faster than Schema-on-Write since the schema does not need to be defined prior to loading. This is a huge advantage in a big data environment with lots of unstructured data. The Schema-on-Read process can scale up rapidly as per requirement and can consume vast volumes of data in quick time, since it is not constrained by data modelers required in the case of a rigid database. 
+
+When schema is generated on write, the schema comes before the data. A very common schema on write scenario is that a data engineer creates several tables in a relational database that are connected by primary keys with a rigid schema. Then, the data engineer populates the table with data. In a schema on read scenario, different types of data, potentially both structured and unstructured, are loaded into the destination, and the schema is generated when queries against the data are executed. This means the data engineer can spend more time crafting queries to gain better insights rather than spending all of their time carefully defining fields.
+
+Based on the information described above, it is reasonable to assume that the schema-on-read principle is superior to the schema-on-write principle, especially in an environment where there are large amounts of unstructured data, such as the data that falls within the Big Data ambit.
+
+Not only is the schema-on-read process faster than the schema-on-write process, but it also has the capacity to scale up rapidly. The reason being is that the schema-on-read construct does not utilize data modelers to model a rigid database. It consumes the data as it is being read and is suitable for massive volumes of unstructured data.  
+
+Handles schema drift naturally.
+
+
+## What is data management
+Succinctly stated, “data management is the process of ingesting, storing, organizing, and 
+ maintaining the data created and collected by an organization.” Juxtapositionally, the lack of data management leads to incompatible data silos, inconsistent data sets, data swamps instead of data lakes, and data quality problems, resulting in the limited ability of BI (Business Intelligence) and analytics applications to produce correct and viable information. 
+
+# What is data partitioning
+
+Data Partitioning in Data Lakes is the practice of dividing data sets into smaller, more manageable parts based on specific criteria, such as time, location, or any other relevant attribute. This technique creates a logical structure within a data lake, enabling efficient data retrieval and analysis.
+
+Data Warehouse Partitioning is a technique used in data warehousing to improve query performance and optimize resource utilization. By dividing large tables into smaller, more manageable units called partitions, businesses can significantly reduce processing time and achieve better query response.
+
+## Benefits of partitioning
+
+Reducing query execution time and improving performance
+Optimizing resources and minimizing operational costs
+Data Warehouse Partitioning can substantially improve query performance by reducing data scanning, pruning irrelevant partitions, and facilitating parallel processing. However, the performance benefits depend on the proper design and implementation of partitioning strategies.
+
+
+## Partitioning on s3
+
+Large organizations processing huge volumes of data usually store it in Amazon Simple Storage Service (Amazon S3) and query the data to make data-driven business decisions using distributed analytics engines such as Amazon Athena. If you simply run queries without considering the optimal data layout on Amazon S3, it results in a high volume of data scanned, long-running queries, and increased cost.
+
+## Hive style
+
+If you look at the Athena documentation you often see data organized with paths that contain key value pairs, like country=fr/… or year=2020/month=06/day=26/…. This is Hive style (or format) partitioning. The paths include both the names of the partition keys and the values that each path represents. It can be convenient and self documenting, but it’s also uncommon to see it outside outside the Hadoop and Hive ecosystem, where it originated.
+
+A self-documenting scheme
+Consider a file listing like this one:
+
+```
+data/day=2020-04-20/country=fr/7fc6742c.json
+data/day=2020-04-20/country=ir/80af7e0c.json
+data/day=2020-04-20/country=se/f76c0d8f.json
+data/day=2020-04-20/country=us/cf7e76b9.json
+data/day=2020-04-21/country=af/cb81aacf.json
+data/day=2020-04-21/country=ch/6b8ea57f.json
+data/day=2020-04-21/country=fr/0c8e74a2.json
+data/day=2020-04-21/country=us/68af2b83.json
+```
+
+You can probably guess that the data is partitioned by day and country just by looking at the file paths. The benefit of this style is that it is more or less self-documenting. Both humans and computers can see how the data is partitioned, and select only the files relevant for a query that includes conditions on day and country.
+
+If you are starting from scrach and have full control over how the data in your data lake is organized, this is a good convention to follow, and it is understood by many tools in the Hadoop ecosystem.
+
+Often, though, you don’t fully control the way data is produced and organized, and most tools outside of the Hadoop world don’t organize data using the Hive style. Instead, you probably get files organized like this:
+
+```
+data/2020-04-20/fr/7fc6742c.json
+data/2020-04-20/ir/80af7e0c.json
+data/2020-04-20/se/f76c0d8f.json
+data/2020-04-20/us/cf7e76b9.json
+data/2020-04-21/af/cb81aacf.json
+data/2020-04-21/ch/6b8ea57f.json
+data/2020-04-21/fr/0c8e74a2.json
+data/2020-04-21/us/68af2b83.json
+```
+
+This listing has the same files, and if you were presented with this listing you would still figure out how it was organized. This is probably also how most people would organize this data set if given no specific instructions. As long as there is some documentation on what the path components mean it’s also not really any worse than the Hive style, except that Hive-aware tools can’t use it directly.
+
+Another variant that is fairly common, and used by, for example, CloudTrail and Kinesis Firehose is using separate path components for the date parts, e.g. data/2020/04/20/fr/7fc6742c.json.
+
+
+## Partitioning data in Athena
+https://docs.aws.amazon.com/athena/latest/ug/partitions.html
+
+By partitioning your data, you can restrict the amount of data scanned by each query, thus improving performance and reducing cost. You can partition your data by any key. A common practice is to partition the data based on time, often leading to a multi-level partitioning scheme. For example, a customer who has data coming in every hour might decide to partition by year, month, date, and hour. Another customer, who has data coming from many different sources but that is loaded only once per day, might partition by a data source identifier and date.
+
+Athena can use Apache Hive style partitions, whose data paths contain key value pairs connected by equal signs (for example, country=us/... or year=2021/month=01/day=26/...). Thus, the paths include both the names of the partition keys and the values that each path represents. To load new Hive partitions into a partitioned table, you can use the MSCK REPAIR TABLE command, which works only with Hive-style partitions.
+
+Athena can also use non-Hive style partitioning schemes. For example, CloudTrail logs and Kinesis Data Firehose delivery streams use separate path components for date parts such as data/2021/01/26/us/6fc7845e.json. For such non-Hive style partitions, you use ALTER TABLE ADD PARTITION to add the partitions manually.
