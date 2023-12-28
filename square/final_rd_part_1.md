@@ -235,6 +235,43 @@ Data Partitioning in Data Lakes is the practice of dividing data sets into small
 
 Data Warehouse Partitioning is a technique used in data warehousing to improve query performance and optimize resource utilization. By dividing large tables into smaller, more manageable units called partitions, businesses can significantly reduce processing time and achieve better query response.
 
+
+## How partitioning works
+
+folders where data is stored on S3, which are physical entities, are mapped to partitions, which are logical entities, in a metadata store such as Glue Data Catalog or Hive Metastore. As covered in AWS documentation, Athena leverages these partitions in order to retrieve the list of folders that contain relevant data for a query.
+
+Data is commonly partitioned by time, so that folders on S3 and Hive partitions are based on hourly / daily / weekly / etc. values found in a timestamp field in an event stream. Here’s an example of how Athena partitioning would look for data that is partitioned by day:
+
+Athena matches the predicates in a SQL WHERE clause with the table partition key. The best partitioning strategy enables Athena to answer the queries you are likely to ask while scanning as little data as possible, which means you’re aiming to filter out as many partitions as you can.
+
+For example – if we’re typically querying data from the last 24 hours, it makes sense to use daily or hourly partitions. Monthly partitions will cause Athena to scan a month’s worth of data to answer that single day query, which means we are scanning ~30x the amount of data we actually need, with all the performance and cost implication.
+
+Suppose you want to run the following query: select count(*) from the_table where country = 'Angola'. This query will run faster if the data lake is partitioned by the country column. The query engine only needs to list and read the data files in the country='Angola' directory. It can skip the data files in the other directories.
+
+Engines need to run file listing operations to determine the files that must be read for different queries. Hive-style partitioning allows the query engine to read less files for certain queries.
+
+For a query like select count(*) from the_table, the Hive-style partitioning doesn’t allow for any data skipping, so the query won’t run any faster. The Hive-style partitioning can actually make queries that can’t leverage data skipping run far slower.
+
+## How to partition
+
+ Partition columns are usually designed by a common query pattern in your use case. For example, a common practice is to partition the data based on year/month/day because many queries tend to run time series analyses in typical use cases. This often leads to a multi-level partitioning scheme. Data is organized in a hierarchical directory structure based on the distinct values of one or more columns.
+
+Let’s look at an example of how partitioning works.
+
+Files corresponding to a single day’s worth of data are placed under a prefix such as s3://my_bucket/logs/year=2023/month=06/day=01/.
+
+If your data is partitioned per day, every day you have a single file, such as the following:
+
+s3://my_bucket/logs/year=2023/month=06/day=01/file1_example.json
+s3://my_bucket/logs/year=2023/month=06/day=02/file2_example.json
+s3://my_bucket/logs/year=2023/month=06/day=03/file3_example.json
+We can use a WHERE clause to query the data as follows:
+
+SELECT * FROM table WHERE year=2023 AND month=06 AND day=01
+The preceding query reads only the data inside the partition folder year=2023/month=06/day=01 instead of scanning through the files under all partitions. Therefore, it only scans the file file1_example.json.
+
+Systems such as Athena, Amazon Redshift Spectrum, and now AWS Glue can use these partitions to filter data by value, eliminating unnecessary (partition) requests to Amazon S3. This capability can improve the performance of applications that specifically need to read a limited number of partitions. 
+
 ## Benefits of partitioning
 
 Reducing query execution time and improving performance
@@ -294,3 +331,4 @@ By partitioning your data, you can restrict the amount of data scanned by each q
 Athena can use Apache Hive style partitions, whose data paths contain key value pairs connected by equal signs (for example, country=us/... or year=2021/month=01/day=26/...). Thus, the paths include both the names of the partition keys and the values that each path represents. To load new Hive partitions into a partitioned table, you can use the MSCK REPAIR TABLE command, which works only with Hive-style partitions.
 
 Athena can also use non-Hive style partitioning schemes. For example, CloudTrail logs and Kinesis Data Firehose delivery streams use separate path components for date parts such as data/2021/01/26/us/6fc7845e.json. For such non-Hive style partitions, you use ALTER TABLE ADD PARTITION to add the partitions manually.
+
