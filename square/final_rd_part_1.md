@@ -1,5 +1,12 @@
 # Data Modeling, ETL & Data Architecture
 
+## Questions to ask right away before building
+- Where is the data? How to access?
+- What's the SLA?
+- format of the data, do we have a data contract?
+- PII? do I need to do some light transform before loading? Legal reasons? GDPR?
+- query patterns... how should the data be stored/sorted/distributed?g
+
 ## Efficient data modeling design (from requirement gathering, determining the right questions to ask, data onboarding case study)
 What Data Sources Are Available?
 Identify the various data sources, such as transaction databases, website clickstreams, customer surveys, and social media interactions.
@@ -201,11 +208,67 @@ The reason for this is that flattening involves business logic. It involves you 
 
 ## Some other topics
 
+## Fact tables
+
+A fact table or a fact entity is a table or entity in a star or snowflake schema that stores measures that measure the business, such as sales, cost of goods, or profit.
+Fact tables and entities aggregate measures, or the numerical data of a business. To measure data in a fact table or entity, all of the measures in a fact table or entity must be of the same grain.
+
+To obtain the most useful data in a fact table or entity, you should use measures that are both numeric and additive. Using these measures guarantees that data can be retrieved and aggregated, so that the business can make use of the wealth of business data in the database.
+
+Fact tables and entities also contain foreign keys to the dimension tables. These foreign keys relate each row of data in the fact table to its corresponding dimensions and levels.
+
+Fact tables and entities use primary keys that are composite keys. A composite key is made up of a subset of other keys. If a table or entity in a dimensional model uses a composite key, then that table is a fact table or entity. The use of composite keys causes the table or entity to have a many-to-many relationship with other tables and entities in the dimensional model.
+
+Fact table and entity types
+There are three types of fact tables and entities:
+Transaction
+A transaction fact table or transaction fact entity records one row per transaction.
+Periodic
+A periodic fact table or periodic fact entity stores one row for a group of transactions that happen over a period of time.
+Accumulating
+An accumulating fact table or accumulating fact entity stores one row for the entire lifetime of an event. An example of an accumulating fact table or entity records the lifetime of a credit card application from the time it is sent to the time it is accepted.
+Note: You cannot explicitly specify the type of fact table or entity by using the workbench. To document the types of fact tables that you are using, you can add the information to the documentation.
+The following table compares the different types of fact tables and entities. The table emphasizes that each has a different type of grain and that there are differences in how insert and update operations occur in each. For example, in transaction and periodic fact tables and entities, only insert operations occur. However, in an accumulating fact table or entity, the row is first inserted, and as a milestone is achieved and additional measures are made available, the table or entity is subsequently updated.
+
+
+## Dimension Tables
+
+A dimension table or dimension entity is a table or entity in a star, snowflake, or starflake schema that stores details about the facts. For example, a Time dimension table stores the various aspects of time such as year, quarter, month, and day.
+Dimension table store descriptive information about the numerical values in a fact table. For example, dimension tables for a marketing analysis application might include Time Period, Marketing Region, and Product Type.
+
+Dimension tables describe the different aspects of a business process. For example, if you are looking to determine the sales targets, you can store the attributes of the sales targets in a dimension table. Dimension tables group the data in the database when the business creates reports. For example, you can group sales targets by country, product, or retailer, and those groupings are stored in dimension tables.
+
+Each dimension table contains a number of columns and attributes that are used to describe business processes.
+
+Since the data in a dimension table is often denormalized, dimension tables have a large number of columns. The dimension tables contain fewer rows of data than the fact table. The columns of a dimensional table are used to create reports or display query results. For example, the textual descriptions of a report are created from the column labels of a dimension table.
+
+Consider the following points when you create your dimension tables:
+Grain
+Each dimension table has only one element at the lowest level of detail, and this element is known as the grain of the dimension.
+
+Non-key elements
+Each non-key element should appear in only one dimension table.
+
+Time and date dimensions
+You will typically have multiple time and date dimensions in your dimensional model.
+
+Number of dimensions
+Dimensional models typically contain only 10 to 15 dimension tables. If you need more dimensions, merge those dimension tables into a single table.
+
+Creating one-to-many relationships
+The rows in a dimension table establish a one-to-many relationship with the fact table or outriggers.
+
+Shared dimensions
+Typically, dimension tables that are shared by multiple fact tables (or multiple dimensional models) are called shared dimensions. If shared dimensions already exist for any of the dimensions in the data warehouse or dimensional model, you should use the shared dimensions. If you are developing new dimensions that may be used across the entire enterprise warehouse, you should develop a design that anticipates the needs of the enterprise warehouse.
+
+
 ### Schema on read vs schema on write
 Schema-on-Write is associated with Relational Database Schema
 Databases have employed a Schema-on-Write paradigm for decades, that is, the schema/table structure is first defined up front and then the data is written to the said schema as a part of the write process. Once the data has been written to the schema it is then available for reading, as such it’s named Schema-on-Write.
 
 ETL from relational databases needs Schema-on-Write. The Schema-on-Write approach means the tables must be created first and schemas configured before data can be ingested. Relational databases have structured data whose structure is known in advance, so you can create tables accordingly, defining columns, data formats, column relationships at destination before the data is uploaded and available for analytical queries.
+
+
 
 Schema-on-Read is associated with the rise of Data Lakes
 Schema-on-Read has come about in conjunction with the rise of data lakes primarily for data science use cases and Machine Learning models. Here the raw data is first landed in its native form (structured and/or unstructured) with no imposed schema. Only once the data is read is the schema is applied, hence Schema-on-Read. Schema-on-Read is the opposite of Schema-in-Write. With the Schema-on-Read approach, the schema is created only when the data is read and not before data ingestion. Data schema are created while the ETL process is carried out. This enables raw, unstructured data to be stored in the database
