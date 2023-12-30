@@ -30,7 +30,7 @@ Answer in [link to answer](./final_rd_part_1.md)
 **Analytics Thinking (45min)**
 - case study of generating a data report based on given business requirements (figuring out the correct metrics, adding dimensions,
   (what kind of metrics do we need here? what do we want to look at?, come up with some points to make)
-  (what can you do to help enable to drill down into the report and understand the data, drill down into the report, how to add dimension to the report for others to understand it, how to help them udnertstand relevant data in the report)
+  (what can you do to help enable to drill down into the report and understand the data, drill down into the report, how to add dimension to the report for others to understand it, how to help them undertstand relevant data in the report)
 - case study on conversions (business requirements gathering, identifying right analysis to generate insights, draw conclusions and make recommendations)
 - industry terminologies
 
