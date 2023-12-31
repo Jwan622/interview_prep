@@ -89,7 +89,6 @@ Consider designing dashboards and reports that provide actionable insights for h
 This case study highlights the critical questions and considerations before embarking on data onboarding and modeling for a healthcare analytics system. If you'd like to explore any specific aspect in more detail or have questions about the technical implementation, feel free to ask for additional information or code examples.
 
 
-
 ## ETL Development Lifecycle:
 
 Requirement Gathering: Start by understanding the business needs and data requirements. Work closely with stakeholders to define what data needs to be extracted, transformed, and loaded.
@@ -261,6 +260,50 @@ The rows in a dimension table establish a one-to-many relationship with the fact
 Shared dimensions
 Typically, dimension tables that are shared by multiple fact tables (or multiple dimensional models) are called shared dimensions. If shared dimensions already exist for any of the dimensions in the data warehouse or dimensional model, you should use the shared dimensions. If you are developing new dimensions that may be used across the entire enterprise warehouse, you should develop a design that anticipates the needs of the enterprise warehouse.
 
+## Why use a data lakehouse like Spectrum and S3
+https://aws.amazon.com/blogs/big-data/build-a-lake-house-architecture-on-aws/
+
+A problem a company had: (In short, event data grows too fast) 
+Certain data sources being stored in our Redshift cluster were growing at an unsustainable rate, and we were consistently running out of storage resources.
+
+Running Off a Horizontal Cliff
+After a brief investigation, we determined that one specific dataset was the root of our problem. The dataset in question stores all event-level data for our application. This type of dataset is a common culprit among quickly growing startups. We store relevant event-level information such as event name, the user performing the event, the url on which the event took place, etc for just about every event that takes place in the Mode app. As our user base has grown, the volume of this data began growing exponentially. By the start of 2017, the volume of this data already grew to over 10 billion rows
+In most cases, the solution to this problem would be trivial; simply add machines to our cluster to accommodate the growing volume of data. We hit an inflection point, however, where the volume of data was growing at such a rate that scaling horizontally by adding machines to our Redshift cluster was no longer technically or financially sustainable. To add insult to injury, a majority of the event data being stored was not even being queried often. It simply didn’t make sense to linearly scale our Redshift cluster to accommodate an exponentially growing, but seldom-utilized, dataset. We needed a way to efficiently store this rapidly growing dataset while still being able to analyze it when needed. And we needed a solution soon.
+
+In April 2017, AWS announced a new technology called Redshift Spectrum. With Spectrum, AWS announced that Redshift users would have the ability to run SQL queries against exabytes of unstructured data stored in S3, as though they were Redshift tables. In addition, Redshift users could run SQL queries that spanned both data stored in your Redshift cluster and data stored more cost-effectively in S3. Redshift users rejoiced, as it seemed that AWS had finally delivered on the long-awaited separation of compute and storage within the Redshift ecosystem.
+
+This was welcome news for us, as it would finally allow us to cost-effectively store infrequently queried partitions of event data in S3, while still having the ability to query and join it with other native Redshift tables when needed.
+
+But how does Redshift Spectrum actually do this? Mainly, via the creation of a new type of table called an External Table.
+
+External tables in Redshift are read-only virtual tables that reference and impart metadata upon data that is stored external to your Redshift cluster. This could be data that is stored in S3 in file formats such as text files, parquet and Avro, amongst others. Creating an external table in Redshift is similar to creating a local table, with a few key exceptions. You need to:
+
+Assign the external table to an external schema.
+Tell Redshift where the data is located.
+Tell Redshift what file format the data is stored as, and how to format it.
+That’s it. Once you have your data located in a Redshift-accessible location, you can immediately start constructing external tables on top of it and querying it alongside your local Redshift data. For us, what this looked like was unloading the infrequently queried partition of event data in our Redshift to S3 as a text file, creating an external schema in Redshift, and then creating an external table on top of the data now stored in S3. Once this was complete, we were immediately able to start querying our event data stored in S3 as if it were a native Redshift table.
+
+
+## Data types supported by Amazon Redshift
+Since Redshift Spectrum is an extended feature of Redshift, it supports
+same data formats as used in Redshift tables/views. However, there are
+some limitations in using DATE and TIMESTAMP data types. Please refer
+to the AWS documentation for complete details.
+
+Data catalog for Redshift Spectrum
+Data stored in Redshift Spectrum are in the form of tables called as
+External table. However, they are not a normal table stored in the cluster,
+unlike Redshift tables. The actual data is being stored in S3. You have to
+use standard Redshift SQL queries to examine those external tables. In
+Redshift, you need to create a schema in Redshift cluster; while in
+Redshift Spectrum, a schema is being referenced in the external database
+called data catalog. Data Catalog an index to the location and metrics of
+Spectrum data.
+
+Before you load data in Redshift Spectrum tables, you need to create a
+data catalog which Spectrum needs to refer. Redshift spectrum refers
+data catalog from Amazon Athena/Glue/EMR. Redshift schema external
+tables can also be viewed in Amazon Athena/Glue/EMR and vice-versa
 
 ### Schema on read vs schema on write
 Schema-on-Write is associated with Relational Database Schema
@@ -435,5 +478,32 @@ Since you can scale NoSQL databases horizontally by adding servers, you can expa
 
 4. Agile 
 Rows and columns don’t stifle NoSQL databases, so they can handle all kinds of data, such as unstructured, structured, and polymorphic data.
+
+
+# Other technologies:
+
+## What is Spark vs Hadoop?
+
+How does Apache Spark work?
+Hadoop MapReduce is a programming model for processing big data sets with a parallel, distributed algorithm. Developers can write massively parallelized operators, without having to worry about work distribution, and fault tolerance. However, a challenge to MapReduce is the sequential multi-step process it takes to run a job. With each step, MapReduce reads data from the cluster, performs operations, and writes the results back to HDFS. Because each step requires a disk read, and write, MapReduce jobs are slower due to the latency of disk I/O.
+
+Spark was created to address the limitations to MapReduce, by doing processing in-memory, reducing the number of steps in a job, and by reusing data across multiple parallel operations. With Spark, only one-step is needed where data is read into memory, operations performed, and the results written back—resulting in a much faster execution. Spark also reuses data by using an in-memory cache to greatly speed up machine learning algorithms that repeatedly call a function on the same dataset. Data re-use is accomplished through the creation of DataFrames, an abstraction over Resilient Distributed Dataset (RDD), which is a collection of objects that is cached in memory, and reused in multiple Spark operations. This dramatically lowers the latency making Spark multiple times faster than MapReduce, especially when doing machine learning, and interactive analytics.
+
+## Some parts of the Spark Framework
+Spark Core is the foundation of the platform. It is responsible for memory management, fault recovery, scheduling, distributing & monitoring jobs, and interacting with storage systems. Spark Core is exposed through an application programming interface (APIs) built for Java, Scala, Python and R. These APIs hide the complexity of distributed processing behind simple, high-level operators.
+
+Spark SQL
+Spark SQL is a distributed query engine that provides low-latency, interactive queries up to 100x faster than MapReduce. It includes a cost-based optimizer, columnar storage, and code generation for fast queries, while scaling to thousands of nodes. Business analysts can use standard SQL or the Hive Query Language for querying data. Developers can use APIs, available in Scala, Java, Python, and R. It supports various data sources out-of-the-box including JDBC, ODBC, JSON, HDFS, Hive, ORC, and Parquet. Other popular stores—Amazon Redshift, Amazon S3, Couchbase, Cassandra, MongoDB, Salesforce.com, Elasticsearch, and many others can be found from the Spark Packages ecosystem.
+
+The Spark library MLlib  is used for Machine Learning . Spark includes MLlib, a library of algorithms to do machine learning on data at scale. Machine Learning models can be trained by data scientists with R or Python on any Hadoop data source, saved using MLlib, and imported into a Java or Scala-based pipeline. Spark was designed for fast, interactive computation that runs in memory, enabling machine learning to run quickly. The algorithms include the ability to do classification, regression, clustering, collaborative filtering, and pattern mining.
+
+## Key differences: Apache Spark vs. Apache Hadoop
+Outside of the differences in the design of Spark and Hadoop MapReduce, many organizations have found these big data frameworks to be complimentary, using them together to solve a broader business challenge.
+
+Hadoop is an open source framework that has the Hadoop Distributed File System (HDFS) as storage, YARN as a way of managing computing resources used by different applications, and an implementation of the MapReduce programming model as an execution engine. In a typical Hadoop implementation, different execution engines are also deployed such as Spark, Tez, and Presto.
+
+Spark is an open source framework focused on interactive query, machine learning, and real-time workloads. It does not have its own storage system, but runs analytics on other storage systems like HDFS, or other popular stores like Amazon Redshift, Amazon S3, Couchbase, Cassandra, and others. 
+
+
 
 
