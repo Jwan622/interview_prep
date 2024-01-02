@@ -266,6 +266,7 @@ For example, if 100 people visit a website and all the men are shown one version
 
 
 ## Statistical power
+reall good post: https://cxl.com/blog/statistical-power/
 
 My enthusiastic, yet misguided, belief was that I simply needed to find aspects to optimize, set up the tool, and start the test. After that, I thought, it was just a matter of awaiting the infamous 95% statistical significance.
 
@@ -304,4 +305,13 @@ Type II errors are controlled by your chosen power level: the higher the power l
 
 Statistical power is a balancing act with trade-offs for each test. As Paul D. Ellis says, “A well thought out research design is one that assesses the relative risk of making each type of error, then strikes an appropriate balance between them.”
 
+
+## A/A Testing
+
+- if your test group is representative of the population, then the 20% is usually due to noise in the data. Take a test group, and a "B" group, and if you ssee a difference, perhaps sample size is too small. We as data engineers take care of the whole technical infrastructure of this A/A test. This will show you perhaps something is not setup correctly in the test or the sample size is too small. This is done for A/A testing. if there is a difference in the data, then we need to change our test setup.
+
+- effect size - the difference in distributions. Calculate difference in the mean. Take distribution of the two groups and you compare them. YOu get effect size number How much the two groups are different. It's a kind of noise in the data.
+
+
+## Things to do before
 

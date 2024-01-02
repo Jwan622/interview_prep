@@ -5,7 +5,8 @@
 - What's the SLA?
 - format of the data, do we have a data contract?
 - PII? do I need to do some light transform before loading? Legal reasons? GDPR?
-- query patterns... how should the data be stored/sorted/distributed?g
+- query patterns... how should the data be stored/sorted/distributed?
+- data scientists have to do many transformations. big SQL. denormalize to a presentation table
 
 ## Efficient data modeling design (from requirement gathering, determining the right questions to ask, data onboarding case study)
 What Data Sources Are Available?
@@ -151,6 +152,43 @@ Data Profiling:
 Profile data at various stages of the ETL process to identify data quality problems or anomalies.
 Use data profiling tools to automate this process.
 
+## What's an efficient and effective way to data model?
+
+1. Requirement Gathering:
+
+Understand the Business Goals: Begin by understanding the overall business goals and objectives that the data warehouse will support. This might involve meetings with stakeholders to align on the scope and purpose of the project.
+Identify Key Metrics: Work closely with business analysts and data stakeholders to identify the key metrics and performance indicators that need to be tracked and analyzed. What questions do they want to answer with the data?
+Data Sources: Determine the sources of data that will feed into the data warehouse. This can include databases, APIs, external data providers, and more.
+
+2. Asking the Right Questions:
+What Data Is Needed?: Clarify the specific data elements that are required to answer the identified business questions. This might include transaction data, customer information, product details, and more.
+Data Granularity: Understand the level of detail needed. Do you need daily, hourly, or monthly data? This influences the design of your data warehouse schema.
+Data Transformation: Ask about any required data transformations or calculations. For example, do you need to calculate average sales per customer or year-over-year growth?
+Data Retention: Discuss how long historical data should be retained in the data warehouse. Different businesses may have varying compliance requirements or historical analysis needs.
+
+3. Data Onboarding Case Study:
+
+Let's consider a case study for a fictional e-commerce company:
+Business Goal: The e-commerce company aims to improve customer retention and increase average order value.
+
+Questions to Ask:
+What customer data is needed?: To address this goal, you might need customer information, purchase history, and customer interaction data.
+What is the data source?: Determine where this data comes from, such as the company's CRM system and sales database.
+Data Granularity: Are daily customer interactions required, or will weekly summaries suffice?
+Calculations: Do you need to calculate metrics like customer lifetime value or the average time between purchases?
+Data Retention: How many years of historical data should be stored for analysis? Is there a legal requirement to retain certain customer data?
+
+4. Data Modeling:
+
+Choose the Right Data Warehouse Model: Depending on your requirements, you can opt for a star schema, snowflake schema, or other models. For the e-commerce case, a star schema may be suitable.
+ETL Process: Define the Extract, Transform, Load (ETL) process to clean, transform, and load data into the warehouse.
+Indexes and Performance: Ensure appropriate indexing and performance optimization techniques to handle the expected data volume and query complexity.
+Data Quality: Implement data quality checks and validation to maintain the accuracy and reliability of the data.
+Documentation: Document the data modeling decisions, schema structures, and transformations for future reference.
+
+Efficient data modeling involves close collaboration between data engineers, data scientists, and business stakeholders to ensure that the data warehouse is designed to meet specific business needs and answer critical questions accurately and efficiently.
+Once we make the data model, try to ask the data scientist about recommendations engines. Recommendation Algorithm: Work with data scientists to develop recommendation algorithms that leverage the data model. Collaborate to understand how the algorithm uses the data and what features are crucial.
+
 
 ## ETL vs ELT
 
@@ -259,6 +297,21 @@ The rows in a dimension table establish a one-to-many relationship with the fact
 
 Shared dimensions
 Typically, dimension tables that are shared by multiple fact tables (or multiple dimensional models) are called shared dimensions. If shared dimensions already exist for any of the dimensions in the data warehouse or dimensional model, you should use the shared dimensions. If you are developing new dimensions that may be used across the entire enterprise warehouse, you should develop a design that anticipates the needs of the enterprise warehouse.
+
+### Denormalized Dimension Tables:
+
+Product Dimension Table (Denormalized):
+Contains product attributes like product name, category, and brand.
+May also contain redundant information, like category name repeated for each product, for query performance.
+
+Customer Dimension Table (Denormalized):
+Contains customer attributes like customer name, email, and age.
+May also include repeated information, such as customer city, for the same reason.
+
+Date Dimension Table (Denormalized):
+Contains date attributes like date, month, and year.
+May also have repeated data, such as month name, for faster aggregation.
+This denormalization approach simplifies queries because it reduces the need for complex joins when retrieving data. However, it's important to note that this design choice can result in increased storage requirements due to redundancy.
 
 ## Why use a data lakehouse like Spectrum and S3
 https://aws.amazon.com/blogs/big-data/build-a-lake-house-architecture-on-aws/
