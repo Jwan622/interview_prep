@@ -38,8 +38,6 @@ Say we have a food delivery service, we implement a new feature, and we want to 
 ![metrics](../images/square/metrics_to_know.png)
 
 
-
-
 # Here's another example
 
 ![case_study_prompt.png](../images/square/case_study_prompt.png)
@@ -197,4 +195,113 @@ Lastly, Fung says that few companies do enough retesting. “We tend to test it 
 This can be particularly difficult to do because it is likely that managers would end up with contradictory results, and no one wants to discover that they’ve undermined previous findings, especially in the online world, where managers want to make changes — and capture value — quickly. But this focus on value can be misguided, Fung says: “People are not very vigilant about the practical value of the findings. They want to believe that every little amount of improvement is valuable even when the test results are not fully reliable. In fact, the smaller the improvement, the less reliable the results.”
 
 It’s clear that A/B testing is not a panacea. There are more complex kinds of experiments that are more efficient and will give you more reliable data, Fung says. But A/B testing is a great way to gain a quick understanding of a question you have. And “the good news about the A/B testing world is that everything happens so quickly, so if you run it and it doesn’t work, you can try something else. You can always flip back to the old tactic.”
+
+## Some a/b testing mistakes
+
+Lastly, Fung says that few companies do enough retesting. “We tend to test it once and then we believe it. But even with a statistically significant result, there’s a quite large probability of false positive error. Unless you retest once in a while, you don’t rule out the possibility of being wrong.” False positives can occur for several reasons. For example, even though there may be little chance that any given A/B result is driven by random chance, if you do lots of A/B tests, the chances that at least one of your results is wrong grows rapidly.
+
+This can be particularly difficult to do because it is likely that managers would end up with contradictory results, and no one wants to discover that they’ve undermined previous findings, especially in the online world, where managers want to make changes — and capture value — quickly. But this focus on value can be misguided, Fung says: “People are not very vigilant about the practical value of the findings. They want to believe that every little amount of improvement is valuable even when the test results are not fully reliable. In fact, the smaller the improvement, the less reliable the results.”
+
+### Sampling Error
+
+When you run the results, you find that those who saw the new campaign spent $10.17 on average, more than the $8.41 those who saw the old one spent. This $1.76 might seem like a big — and perhaps important — difference. But in reality you may have been unlucky, drawing a sample of people who do not represent the larger population; in fact, maybe there was no difference between the two campaigns and their influence on consumers’ purchasing behaviors. This is called a sampling error, something you must contend with in any test that does not include the entire population of interest.
+
+Redman notes that there are two main contributors to sampling error: the size of the sample and the variation in the underlying population. Sample size may be intuitive enough. Think about flipping a coin five times versus flipping it 500 times. The more times you flip, the less likely you’ll end up with a great majority of heads. The same is true of statistical significance: With bigger sample sizes, you’re less likely to get results that reflect randomness. All else being equal, you’ll feel more comfortable in the accuracy of the campaigns’ $1.76 difference if you showed the new one to 1,000 people rather than just 25. Of course, showing the campaign to more people costs more, so you have to balance the need for a larger sample size with your budget.
+
+Then you collect your data, plot the results, and calculate statistics, including the p-value, which incorporates variation and the sample size. If you get a p-value lower than your target, then you reject the null hypothesis in favor of the alternative. Again, this means the probability is small that your results were due solely to chance.
+
+Closely related to the idea of a significance level is the notion of a confidence interval. Let’s take the example of a political poll. Say there are two candidates: A and B. The pollsters conduct an experiment with 1,000 “likely voters”; 49% of the sample say they’ll vote for A, and 51% say they’ll vote for B. The pollsters also report a margin of error of +/- 3%.
+
+“Technically,” says Redman, “49% +/-3% is a ‘95% confidence interval’ for the true proportion of A voters in the population.” Unfortunately, he says, most people interpret this as “there’s a 95% chance that A’s true percentage lies between 46% and 52%,” but that isn’t correct. Instead, it says that if the pollsters were to do the result many times, 95% of intervals constructed this way would contain the true proportion.
+
+If your head is spinning at that last sentence, you’re not alone. As Redman says, this interpretation is “maddeningly subtle, too subtle for most managers and even many researchers with advanced degrees.” He says the more practical interpretation of this would be “Don’t get too excited that B has a lock on the election” or “B appears to have a lead, but it’s not a statistically significant one.” Of course, the practical interpretation would be very different if 70% of the likely voters said they’d vote for B and the margin of error was 3%.
+
+### Important stats concepts to relearn
+- confidence intervals
+- p value
+- margin of error
+- what is statistically significant?
+- false positive
+
+### Confidence and p-values
+
+Statistical significance is most practically used in hypothesis testing. For example, you want to know whether changing the color of a button on your website from red to green will result in more people clicking on it. If your button is currently red, that’s called your “null hypothesis,” which takes the form of your experiment baseline. Turning your button green is known as your “alternative hypothesis.” 
+
+To determine the observed difference in a statistical significance test, you will want to pay attention to two outputs: p-value and the confidence interval. 
+ 
+P-value can be defined as the likelihood of seeing evidence as strong or stronger in favor of a difference in performance between your variation and baseline, calculated assuming there actually is no difference between them and any lift observed is entirely owed to random fluke. P-values do not communicate how large or small your effect size is or how important the result might be.  
+ 
+Confidence interval refers to an estimated range of values that are likely, but not guaranteed, to include the unknown but exact value summarizing your target population if an experiment was replicated numerous times. An interval is comprised of a point estimate (a single value derived from your statistical model of choice) and a margin of error around that point estimate. Best practices are to report confidence intervals to supplement your statistical significance results, as they can offer information about the observed effect size of your experiment.
+
+![confidnece_intervals](../images/square/ci_1.png)
+
+![confidence_intervals](../images/square/ci_2.png)
+
+The formula for the absolute difference of proportions (i.e. conversion rates of all kinds) is the same—they’re just a special type of mean. Examining the formula, we can see why it’s a random interval: The interval bounds depend on:
+
+The random error introduced by the observed difference in the means;
+The error in estimating the standard deviation of said difference.
+Visualized as a distribution of the error of the mean, an interval bound cuts a certain percentage of a distribution centered on the observed value—to the left, to the right, or on both sides.
+
+We can also see that the larger the sample size, the narrower the width of the interval. This happens since we are dividing the pooled standard deviation by a larger number, which ultimately results in a smaller number being added or subtracted from the observed parameter value.
+
+With an infinite sample size, the interval collapses into a single point on the real line. This follows our intuition: The more data we have, the less uncertainty an estimate of the parameter of interest should have.
+
+Further, requiring a higher confidence level means a larger value for Z, resulting in a wider interval, and vice versa. A 99% confidence interval will always be wider than a 95% confidence interval, all else being equal.
+
+### P value
+
+P-Value 
+Cassie Kozyrkov, Google’s Chief Decision Scientist coined a very simple definition to explain P-Value: “The lower the p-value, the more ridiculous the null hypothesis looks!”
+
+What is P-value in A/B testing?
+P-value is defined as the probability of observing an outcome as extreme or more extreme than the one observed, assuming that the null hypothesis is true. Hence, the p-value is a mathematical device to check the validity of the null hypothesis. The smaller the p-value, the surer we are that we should reject the null hypothesis. 
+### Sample size and effect size
+Sample size refers to how large the sample for your experiment is. The larger your sample size, the more confident you can be in the result of the experiment (assuming that it is a randomized sample). If you are running tests on a website, the more traffic your site receives, the sooner you will have a large enough data set to determine if there are statistically significant results. You will run into sampling errors if your sample size is too low.
+Effect size refers to the magnitude of the difference in outcomes between the two sample sets and communicates the practical significance of your results.  
+ 
+Beyond these two factors, a key thing to remember is the importance of randomized sampling. If traffic to a website is split evenly between two pages, but the sampling isn’t random, it can introduce errors due to differences in behavior of the sampled population. 
+
+For example, if 100 people visit a website and all the men are shown one version of a page and all the women are shown a different version, then a comparison between the two is not possible, even if the traffic is split 50-50, because the difference in demographics could introduce variations in the data. A truly random sample is needed to determine that the result of the experiment is statistically significant. 
+
+
+## Statistical power
+
+My enthusiastic, yet misguided, belief was that I simply needed to find aspects to optimize, set up the tool, and start the test. After that, I thought, it was just a matter of awaiting the infamous 95% statistical significance.
+
+I was wrong.
+
+After implementing “statistically significant” variations, I experienced no lift in sales because there was no true lift—“it was imaginary.” Many of those tests were doomed at inception. I was committing common statistical errors, like not testing for a full business cycle or neglecting to take the effect size into consideration.
+
+I also failed to consider another possibility: That an “underpowered” test could cause me to miss changes that would generate a “true lift.”
+
+Understanding statistical power, or the “sensitivity” of a test, is an essential part of pre-test planning and will help you implement more revenue-generating changes to your site.
+
+**Statistical power is the probability of observing a statistically significant result at level alpha (α) if a true effect of a certain magnitude is present. It allows you to detect a difference between test variations when a difference actually exists.**
+
+Statistical power is the crowning achievement of the hard work you put into conversion research and properly prioritized treatment(s) against a control. This is why power is so important—it increases your ability to find and measure differences when they’re actually there.
+
+Statistical power (1 – β) holds an inverse relationship with Type II errors (β). It’s also how to control for the possibility of false negatives. We want to lower the risk of Type I errors to an acceptable level while retaining sufficient power to detect improvements if test treatments are actually better.
+
+Finding the right balance, as detailed later, is both art and science. If one of your variations is better, a properly powered test makes it likely that the improvement is detected. If your test is underpowered, you have an unacceptably high risk of failing to reject a false null.
+
+### Type I errors
+A Type I error, or false positive, rejects a null hypothesis that is actually true. Your test measures a difference between variations that, in reality, does not exist. The observed difference—that the test treatment outperformed the control—is illusory and due to chance or error.
+
+The probability of a Type I error, denoted by the Greek alpha (α), is the level of significance for your A/B test. If you test with a 95% confidence level, it means you have a 5% probability of a Type I error (1.0 – 0.95 = 0.05). (from me: This is because alpha is the false positive rate. 95% of the time the vvalue falls within the confidence interval. So 5% of the time we have a type 1 error where we reject the null incorrectly.)
+
+If 5% is too high, you can lower your probability of a false positive by increasing your confidence level from 95% to 99%—or even higher. This, in turn, would drop your alpha from 5% to 1%. But that reduction in the probability of a false positive comes at a cost. By increasing your confidence level, the risk of a false negative (Type II error) increases. This is due to the inverse relationship between alpha and beta—lowering one increases the other. So if your type 1 error goes down, your type 2 error (false negative) goes up. 
+
+Lowering your alpha (e.g. from 5% to 1%) reduces the statistical power of your test. As you lower your alpha, the critical region becomes smaller, and a smaller critical region means a lower probability of rejecting the null—hence a lower power level. Conversely, if you need more power, one option is to increase your alpha (e.g. from 5% to 10%).
+
+### Type 2 error
+
+A Type II error, or false negative, is a failure to reject a null hypothesis that is actually false. A Type II error occurs when your test does not find a significant improvement in your variation that does, in fact, exist.
+
+Beta (β) is the probability of making a Type II error and has an inverse relationship with statistical power (1 – β). If 20% is the risk of committing a Type II error (β), then your power level is 80% (1.0 – 0.2 = 0.8). You can lower your risk of a false negative to 10% or 5%—for power levels of 90% or 95%, respectively.
+
+Type II errors are controlled by your chosen power level: the higher the power level, the lower the probability of a Type II error. Because alpha and beta have an inverse relationship, running extremely low alphas (e.g. 0.001%) will, if all else is equal, vastly increase the risk of a Type II error.
+
+Statistical power is a balancing act with trade-offs for each test. As Paul D. Ellis says, “A well thought out research design is one that assesses the relative risk of making each type of error, then strikes an appropriate balance between them.”
+
 

@@ -509,5 +509,55 @@ Hadoop is an open source framework that has the Hadoop Distributed File System (
 Spark is an open source framework focused on interactive query, machine learning, and real-time workloads. It does not have its own storage system, but runs analytics on other storage systems like HDFS, or other popular stores like Amazon Redshift, Amazon S3, Couchbase, Cassandra, and others. 
 
 
+## Data Governance
 
+What is Data Governance?
+Data governance refers to the set of roles, processes, policies and tools which ensure proper data quality throughout the data lifecycle and proper data usage across an organization. Data governance allows users to more easily find, prepare, use and share trusted datasets on their own, without relying on IT.
 
+Data governance is everything you do to ensure data is secure, private, accurate, available, and usable. It includes the actions people must take, the processes they must follow, and the technology that supports them throughout the data life cycle.
+
+Data governance means setting internal standards—data policies—that apply to how data is gathered, stored, processed, and disposed of. It governs who can access what kinds of data and what kinds of data are under governance. Data governance also involves complying with external standards set by industry associations, government agencies, and other stakeholders. 
+
+Poor data governance can also hamper regulatory compliance initiatives. That could cause problems for companies that need to comply with the increasing number of data privacy and protection laws, such as the European Union's GDPR and the California Consumer Privacy Act (CCPA). An enterprise data governance program typically includes the development of common data definitions and standard data formats that are applied in all business systems, boosting data consistency for both business and compliance uses.
+
+Data governance goals and benefits
+A key goal of data governance is to break down data silos in an organization. Such silos commonly build up when individual business units deploy separate transaction processing systems without centralized coordination or an enterprise data architecture. Data governance aims to harmonize the data in those systems through a collaborative process, with stakeholders from the various business units participating.
+
+Another data governance goal is to ensure that data is used properly, both to avoid introducing data errors into systems and to block potential misuse of personal data about customers and other sensitive information. That can be accomplished by creating uniform policies on the use of data, along with procedures to monitor usage and enforce the policies on an ongoing basis. In addition, data governance can help to strike a balance between data collection practices and privacy mandates.
+
+Besides more accurate analytics and stronger regulatory compliance, the benefits that data governance provides include improved data quality; lower data management costs; and increased access to needed data for data scientists, other analysts and business users. Ultimately, data governance can help improve business decision-making by giving executives better information. Ideally, that will lead to competitive advantages and increased revenue and profits.
+
+## DAta Mesh
+
+What is a data mesh?
+A data mesh is a decentralized data architecture that organizes data by a specific business domain—for example, marketing, sales, customer service, and more—providing more ownership to the producers of a given dataset. The producers’ understanding of the domain data positions them to set data governance policies focused on documentation, quality, and access. This, in turn, enables self-service use across an organization. While this federated approach eliminates many operational bottlenecks associated with centralized, monolithic systems, it doesn't necessarily mean that you can't use traditional storage systems, like data lakes or data warehouses. It just means that their use has shifted from a single, centralized data platform to multiple decentralized data repositories.
+
+It's worth noting that data mesh promotes the adoption of cloud native and cloud platform technologies to scale and achieve the goals of data management. This concept is commonly compared to microservices to help audiences understand its use within this landscape. As this distributed architecture is particularly helpful in scaling data needs across an organization, it can be inferred that a data mesh may not be for all types of businesses; that is, smaller businesses may not reap the benefits of a data mesh as their enterprise data may not be as complex as a larger organization.  
+
+![data_mesh](../images/square/data_mesh.png)
+
+What are the principles of data mesh architecture?
+Your organization must implement the following four principles to adopt the data mesh paradigm.
+
+Distributed domain-driven architecture
+The data mesh approach proposes that data management responsibility is organized around business functions or domains. Domain teams are responsible for collecting, transforming, and providing data related to or created by their business functions. Instead of domain data flowing from data sources into a central data platform, a specific team hosts and serves its datasets in an easily consumable way. For example, a retailer could have a clothing domain with data about their clothing products and a website behavior domain that contains site visitor behavior analytics.
+
+Data as a product
+For a data mesh implementation to be successful, every domain team needs to apply product thinking to the datasets they provide. They must consider their data assets as their products and the rest of the organization's business and data teams as their customers.
+
+For the best user experience, the domain data products should have the following basic qualities.
+
+Discoverable
+Each data product registers itself with a centralized data catalog for easy discoverability.
+
+Addressable
+Every data product should have a unique address that helps data consumers access it programmatically. The address typically follows centrally decided naming standards within the organization.
+
+Trustworthy
+Data products define acceptable service-level objectives around how closely the data reflects the reality of the events it documents. For example, the orders domain could publish data after verifying a customer’s address and phone number.
+
+Self-describing
+All data products have well-described syntax and semantics that follow standard naming conventions determined by the organization.
+
+Self-serve data infrastructure
+A distributed data architecture requires every domain to set up its own data pipeline to clean, filter, and load its own data products. A data mesh introduces the concept of a self-serve data platform to avoid duplication of efforts. Data engineers set up technologies so that all business units can process and store their data products. Self-serve infrastructure thus allows a division of responsibility. Data engineering teams manage the technology while business teams manage the data.
