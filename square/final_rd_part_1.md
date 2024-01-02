@@ -305,6 +305,10 @@ data catalog which Spectrum needs to refer. Redshift spectrum refers
 data catalog from Amazon Athena/Glue/EMR. Redshift schema external
 tables can also be viewed in Amazon Athena/Glue/EMR and vice-versa
 
+## Kafka
+
+Kafka allows scaling by use of partitions. Having multiple partitions for a topic, allows consumption of messages by multiple consumers, one per partition, thus parallelising the reads by multiple consumers and getting better throughout (scale). Kafka ensures that only one consumer from each consumer group can consume from a partition. 
+
 ### Schema on read vs schema on write
 Schema-on-Write is associated with Relational Database Schema
 Databases have employed a Schema-on-Write paradigm for decades, that is, the schema/table structure is first defined up front and then the data is written to the said schema as a part of the write process. Once the data has been written to the schema it is then available for reading, as such it’s named Schema-on-Write.
