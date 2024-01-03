@@ -324,6 +324,13 @@ The main advantages of star schemas are that they:
 
 ![star_schema](../images/square/star_schema.png)
 
+## Snowflake Schema
+
+However, the main difference is that they are more normalized than star schemas.
+
+Snowflake schemas offer more storage efficiency, due to their tighter adherence to high normalization standards, but query performance is not as good as with more denormalized data models. Denormalized data models like star schemas have more data redundancy (duplication of data), which makes query performance faster at the cost of duplicated data.
+
+![snowflake](../images/square/snowflake.png)
 
 ## Fact tables
 
