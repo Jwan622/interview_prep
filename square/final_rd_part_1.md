@@ -7,6 +7,7 @@
 - PII? do I need to do some light transform before loading? Legal reasons? GDPR?
 - query patterns... how should the data be stored/sorted/distributed?
 - data scientists have to do many transformations. big SQL. denormalize to a presentation table
+- What kind of data do we need to store? Type 1 data (current data) or Type 2 slowly changing dimensions?
 
 ## Efficient data modeling design (from requirement gathering, determining the right questions to ask, data onboarding case study)
 What Data Sources Are Available?
@@ -716,3 +717,52 @@ All data products have well-described syntax and semantics that follow standard 
 
 Self-serve data infrastructure
 A distributed data architecture requires every domain to set up its own data pipeline to clean, filter, and load its own data products. A data mesh introduces the concept of a self-serve data platform to avoid duplication of efforts. Data engineers set up technologies so that all business units can process and store their data products. Self-serve infrastructure thus allows a division of responsibility. Data engineering teams manage the technology while business teams manage the data.
+
+
+## Slowly changing dimensions
+
+Slowly Changing Dimensions in Data Warehouse is an important concept that is used to enable the historic aspect of data in an analytical system. As you know, the data warehouse is used to analyze historical data, it is essential to store the different states of data.
+
+In data warehousing, we have fact and dimension tables to store the data. Dimensional tables are used to analyze the measures in the fact tables. In a data environment, data is initiated at operational databases and data will be extracted-transformed-loaded (ETL) to the data warehouse to suit the analytical environment.
+
+Customer, Product are examples for Dimensional tables. These dimension attributes are modified over time and in the data warehouse, we need to maintain the history. In operational systems, we may overwrite the modified attributes as we may not need the historical aspects of data. Since our primary target in data warehousing is to analyze data with the perspective of history, we may not be able to simply overwrite the data and we need to implement special techniques to maintain the history considering analytical and volume aspects of the data warehouse. This implementation is done using Slowly Changing Dimensions in Data Warehouse.
+
+
+### Slowly Changing Dimension Techniques
+
+![slowly_changing_dimensions](../images/square/slowly_changing_dimensions.png)
+
+Type 0: Retain Original
+With slowly changing dimension type 0, the dimension attribute value never changes, so facts are
+always grouped by this original value. Type 0 is appropriate for any attribute labeled “original,” such
+as a customer’s original credit score or a durable identifier. It also applies to most attributes in a date
+dimension.
+
+Type 1: Overwrite
+With slowly changing dimension type 1, the old attribute value in the dimension row is overwritten
+with the new value; type 1 attributes always reflects the most recent assignment, and therefore this
+technique destroys history. Although this approach is easy to implement and does not create
+additional dimension rows, you must be careful that aggregate fact tables and OLAP cubes affected
+by this change are recomputed.
+
+In the Type 1 SCD, you simply overwrite data in dimensions. There can be situations where you don’t have the entire data when the record is initiated in the dimension. For example, when the customer record is initiated, you may not get all attributes. Therefore, when the customer record is initiated at the operational database, there will be empty or null records in the customer records. Once the ETL is executed, those empty records will be created in the data warehouse. Once these attributes are filled in the operational databases, that has to be updated in the data warehouse.
+
+Type 1 SCDs are identifying if the existing attributes are null and you are receiving a value from the operational table.
+
+![type_1](../images/square/type_1.png)
+
+
+
+Type 2: Add New Row
+Slowly changing dimension type 2 changes add a new row in the dimension with the updated
+attribute values. This requires generalizing the primary key of the dimension beyond the natural or
+durable key because there will potentially be multiple rows describing each member. When a new
+row is created for a dimension member, a new primary surrogate key is assigned and used as a
+foreign key in all fact tables from the moment of the update until a subsequent change creates a new
+dimension key and updated dimension row. A minimum of three additional columns should be added
+to the dimension row with type 2 changes: 1) row effective date or date/time stamp; 2) row expiration
+date or date/time stamp; and 3) current row indicator.
+
+For example, if a customer's address changes, we insert a second record into the dimension for the same customer.  This way, the old "version" of the customer can be linked to facts that took place prior to the change, and the new version can be linked to new facts.
+
+![type_2](../images/square/type_2.png)
