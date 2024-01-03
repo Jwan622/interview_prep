@@ -278,9 +278,33 @@ Take this employee, city, and department table as an example:
 
 ![not_third_normal](../images/square/non_third_nf.png)
 
+We’re almost there! With 1st normal form, we ensured that every column attribute only holds one value.
+With 2nd normal form we ensured that every column is dependent on the primary key, or more specifically that the table serves a single purpose.
+With 3rd normal form, we want to ensure that non-key attributes are dependent on nothing but the primary key. The more technical explanation involves “transitive dependencies” but for the purpose of this simplified explanation we’ll save that for another day.
+
+In the case of the following table, zip is an attribute generally associated with only one city and state. So it is possible with a data model below that zip could be updated without properly updating the city or state. This would be bad. If we ever update zip, we should update city and state.
+
+![third_normal](../images/square/third_normal_form.png)
+
+### Benefits of Normalization
+Normalizing data helps minimize redundancy and maintain the highest levels of integrity. By organizing column attributes and the relations between tables, data administrators can design systems for efficiency and safety.
+
+More specifically, normalization helps ensure
+- Data is not unnecessarily repeated within a database
+- Inserts, modifications, and deletions only have to happen once in a database
+
 
 
 ## Star schema
+Star schemas are often implemented in a denormalized fashion, with typical normalization rules relaxed. The advantage of this can be simpler reporting logic and faster performance as data may be stored multiple ways to facilitate queries.
+
+The disadvantage of this approach is that integrity is not necessarily enforced through the model leaving room for an update in one place that may not successfully propagate elsewhere.
+Star schemas often skip normalization for two reasons: simplicity of queries and performance.
+
+
+Star schemas denormalize the data, which means adding redundant columns to some dimension tables to make querying and working with the data faster and easier. The purpose is to trade some redundancy (duplication of data) in the data model for increased query speed, by avoiding computationally expensive join operations.
+
+In this model, the fact table is normalized but the dimensions tables are not. That is, data from the fact table exists only on the fact table, but dimensional tables may hold redundant data.
 
 The star schema is perhaps the simplest data warehouse schema. It is called a star schema because the entity-relationship diagram of this schema resembles a star, with points radiating from a central table. The center of the star consists of a large fact table and the points of the star are the dimension tables.
 
