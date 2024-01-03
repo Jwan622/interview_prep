@@ -245,6 +245,62 @@ The reason for this is that flattening involves business logic. It involves you 
 
 ## Some other topics
 
+### First normal form
+
+First Normal Form with Example
+If a relation contains a composite or multi-valued attribute, it violates the first normal form, or the relation is in the first normal form if it does not contain any composite or multi-valued attribute. A relation is in first normal form if every attribute in that relation is single-valued attribute. 
+
+![first_normal](../images/square/first_normal_form.png)
+
+### not second normal form
+![not_2nd_normal](../images/square/not_2nd_normal.png)
+
+This causes the following anomalies:
+
+Update Anomalies
+If a supplier moves locations, every single stock entry must be updated with the new city.
+
+Insertion Anomalies
+The city has to be known at insert time in order to stock a part at a supplier. Really what matters here is the supplier_id and not the city. Also unless the city is stored elsewhere a supplier cannot have a city without having parts, which does not reflect the real world.
+
+Deletion Anomalies
+If the supplier is totally out of stock, and a row disappears, the information about the city in which the supplier resides is lost. Or it may be stored in another table, and city does not need to be in this table anyway.
+
+Separating this into two tables achieves 2nd normal form. See image below
+
+![not_2nd_normal](../images/square/2nd_normal_form.png)
+
+### Third normal form
+Getting to Third Normal Form
+The goal of getting to third normal form is to eliminate update, insertion, and deletion anomalies.
+
+Take this employee, city, and department table as an example:
+
+![not_third_normal](../images/square/non_third_nf.png)
+
+
+
+## Star schema
+
+The star schema is perhaps the simplest data warehouse schema. It is called a star schema because the entity-relationship diagram of this schema resembles a star, with points radiating from a central table. The center of the star consists of a large fact table and the points of the star are the dimension tables.
+
+A star schema is characterized by one or more very large fact tables that contain the primary information in the data warehouse, and a number of much smaller dimension tables (or lookup tables), each of which contains information about the entries for a particular attribute in the fact table.
+
+A star query is a join between a fact table and a number of dimension tables. Each dimension table is joined to the fact table using a primary key to foreign key join, but the dimension tables are not joined to each other. The cost-based optimizer recognizes star queries and generates efficient execution plans for them.
+
+A typical fact table contains keys and measures. For example, in the sh sample schema, the fact table, sales, contain the measures quantity_sold, amount, and cost, and the keys cust_id, time_id, prod_id, channel_id, and promo_id. The dimension tables are customers, times, products, channels, and promotions. The product dimension table, for example, contains information about each product number that appears in the fact table.
+
+A star join is a primary key to foreign key join of the dimension tables to a fact table.
+
+The main advantages of star schemas are that they:
+- Provide a direct and intuitive mapping between the business entities being analyzed by end users and the schema design.
+- Provide highly optimized performance for typical star queries.
+- Are widely supported by a large number of business intelligence tools, which may anticipate or even require that the data-warehouse schema contain dimension tables
+- Star schemas are used for both simple data marts and very large data warehouses.
+
+![star_schema](../images/square/star_schema.png)
+
+
 ## Fact tables
 
 A fact table or a fact entity is a table or entity in a star or snowflake schema that stores measures that measure the business, such as sales, cost of goods, or profit.
@@ -297,6 +353,21 @@ The rows in a dimension table establish a one-to-many relationship with the fact
 
 Shared dimensions
 Typically, dimension tables that are shared by multiple fact tables (or multiple dimensional models) are called shared dimensions. If shared dimensions already exist for any of the dimensions in the data warehouse or dimensional model, you should use the shared dimensions. If you are developing new dimensions that may be used across the entire enterprise warehouse, you should develop a design that anticipates the needs of the enterprise warehouse.
+
+### P hacking
+
+To take a toy example, suppose you wanted to establish a link between chocolate and baldness. You could then get a group of 10,000 men (a pretty big sample size by all accounts) to report on their consumption of M&Ms, Twix and Mars Bars over a period of time. In addition, you record the rate of going bald in the group over time.
+
+P Hacking
+Once you have your chocolate and baldness data, you run tests on everything you can think of. Do men who eat only M&Ms go bald younger? Do young men who eat both Mars and M&Ms but not Twix go bald on top more often than the front? Do older unmarried men who don’t exercise and eat none have a lower incidence of baldness?
+
+Run enough of these tests and you are eventually bound to get a result that is ‘statistically significant’.
+
+A p-value of 0.001, the probability of a result occurring randomly just 1 in 1000 times, is generally judged to be pretty significant: it’s very unlikely the association came about by chance, and there is most likely some factor behind it.
+
+This is based on the assumption, of course, that you are not running thousands of tests in order to find that 1 in a 1000 occurrence.
+
+Honest science demands that scientists go into their research with a clear, motivated hypothesis – for example, that we have reason to believe that this particular chemical causes this type of cancer, and we want to test this. For this reason, p-hacking is considered to be highly unethical.
 
 ### Denormalized Dimension Tables:
 
