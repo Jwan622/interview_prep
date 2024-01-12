@@ -2,12 +2,17 @@
 
 ## Questions to ask right away before building
 - Where is the data? How to access?
-- What's the SLA?
+- What's the business goal in storing this data? What's the insight? What's the key metric or KPI? Bad actors? If so, data needs to be up to date hourly.
+- What's the SLA? What data granularity do we need?
 - format of the data, do we have a data contract?
 - PII? do I need to do some light transform before loading? Legal reasons? GDPR?
 - query patterns... how should the data be stored/sorted/distributed?
-- data scientists have to do many transformations. big SQL. denormalize to a presentation table
+- Do the data scientists have to do many transformations. big SQL. denormalize to a presentation table
 - What kind of data do we need to store? Type 1 data (current data) or Type 2 slowly changing dimensions?
+- How much data is there? Traffic analysis. This affects storage and processing.
+- Is the data clean and storable? How much transformation is needed? Zalgo text? User input?
+- Who will have permission for the data? Who can read? Who can update?
+- What is the ontology of the data? What does it mean? Do we need to add to a data dictionary?
 
 ## Efficient data modeling design (from requirement gathering, determining the right questions to ask, data onboarding case study)
 What Data Sources Are Available?
@@ -205,12 +210,12 @@ Data is extracted from a source system, transformed on a secondary processing se
 
 ### Benefits of ETL
 On the other hand, ETL is ideal for compute-intensive transformations, systems with legacy architectures, or data workflows that require manipulation before entering a target system, such as erasing personal identifying information (PII). Sometimes this happens unintentionally. But with ETL, you will reduce the risk of transferring non-compliant data. Why? Because of the data pipeline, meaning the data is cleaned and filtered before it leaves its initial destination.
-- The reasons we had ETL before was because storage particularly cloud storage was expensive so you had to limit the data you were writing in your warehouse to keep costs down. There was loads of benefits for this, the data models were usually well defined, things were built properly by necessity.
+- The reasons we had ETL before was because storage particularly cloud storage was expensive so you had to limit the data you were writing in your warehouse to keep costs down. There was loads of benefits for this, the data models were usually well-defined, things were built properly by necessity.
 
 ### Downsides of ELT
 - Enter cheaper storage in recent times and suddenly you got ELT. You extract the raw data from source and dump it into your datalake/dwh. 
-- Upside you can chop and change schemas at will since the source data always exists. Downsides less focus on data modelling since everyone is just dumping data into the warehouse and its a free for all.
-- **practical example of ELT downsides, i've recently had to process 3.3Tb worth of data on snowflake in one table in one variant column. When it was made two years ago the original creator found it easier to just extract and dump the one stream into the table then create downstream tables later. This is all well and good initially but 2 years later the data grew and their query time grew with it. So it cost me 8 hours to deconstruct the variant type into a better model that can better server its downstream assets.
+- Upside you can chop and change schemas at will since the source data always exists. Downsides less focus on data modelling since everyone is just dumping data into the warehouse and it's a free for all.
+- **practical example of ELT downsides**:, i've recently had to process 3.3Tb worth of data on snowflake in one table in one variant column. When it was made two years ago the original creator found it easier to just extract and dump the one stream into the table then create downstream tables later. This is all well and good initially but 2 years later the data grew and their query time grew with it. So it cost me 8 hours to deconstruct the variant type into a better model that can better server its downstream assets.
 
 Most pipelines are EtLT. The t being "tweak" for some data cleaning, PII removals, etc. YMMV depending on use case.
 
@@ -223,7 +228,6 @@ But here are a few that stood out:
 We start with arguably the most important best practice: Make every bit of data you load into your data system identifiable and traceable back to the process that got it there.
 
 Typical ways of doing this are to include metadata values that capture:
-
 - Ingestion time: the timestamp indicating when the load process started.
 - Ingestion process: a unique identifier representing the load process and its instance.
 - Source system: Metadata about where the data was extracted from.
@@ -242,7 +246,7 @@ Many source systems you ingest will return arrays, JSONs, or other nested object
 
 A very typical example is JSON objects. Your source might contain a large JSON object, and you would like to have it processed into individual columns inside your Snowflake database. This practice suggests first having a raw table with just your metadata columns and one “JSON_blob” column containing the JSON object. In a second step, you can then process this data into columns.
 
-The reason for this is that flattening involves business logic. It involves you knowing what properties are “always there.” If you flatten on ingestion, your ingestion process might break because one JSON object is NULL, or one JSON object doesn’t come with one expected value. It is always easier to take the already ingested data and rerun your flattener than to run your ingestion + flattening process together.
+The reason for this is that flattening involves business logic. It involves you knowing what properties are “always there.” It's a business logic transformation in and of itself. The shape of the data is tied to business logic and that can change. If you flatten on ingestion, your ingestion process might break because one JSON object is NULL, or one JSON object doesn’t come with one expected value. It is always easier to take the already ingested data and rerun your flattener than to run your ingestion + flattening process together.
 
 ## Some other topics
 
