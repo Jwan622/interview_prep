@@ -17,42 +17,42 @@ Schema Outline
 1) Let’s start with the dim tables. What are the distinct objects? Those are your entities and should be your dimension tables? This includes:
 
 o Dim_deliverer
- Deliverer_id
- Full Name
- Region_Id
- (Other Relevant Demographic_info_cols)
- Account_creation_date – life of the Deliverer
- Last_login_date
- Number_of_trips
- L7_Number_of_trips (last 7 days)
- L28_Number_of_trips (last 28 days)
+- Deliverer_id
+- Full Name
+- Region_Id
+- (Other Relevant Demographic_info_cols)
+- Account_creation_date – life of the Deliverer
+- Last_login_date
+- Number_of_trips
+- L7_Number_of_trips (last 7 days)
+- L28_Number_of_trips (last 28 days)
 
 o Dim_customer
- Customer_id
- Full_Name
- Region_Id
- (Other Relevant Demographic_info_cols, like address)
- Accont_creation_date – life of the customer
- Last_login_date
- Number_of_orders
- L7_Number of_ orders (last 7 days)
- L28_Number of_ orders (last 28 days)
- Premium_user (Y or N)
- Premium_user_start_date (Y or N)
+- Customer_id
+- Full_Name
+- Region_Id
+- (Other Relevant Demographic_info_cols, like address)
+- Accont_creation_date – life of the customer
+- Last_login_date
+- Number_of_orders
+- L7_Number of_ orders (last 7 days)
+- L28_Number of_ orders (last 28 days)
+- Premium_user (Y or N)
+- Premium_user_start_date (Y or N)
 
 o Dim_restaurant
- Restaurant_id
- Restaurant_Name
- Region_Id
- (Other Relevant Demographic_info_cols)
- Account_creation_date – life of the resturant
- Number_of_orders
- L7_ Number of_ orders (last 7 days)
- L28_ Number of_ orders (last 28 days)
- Menu_items (a json)
- Opening_Hour
- Closing_Hour
- Food_Category (fast_food, healthy, etc)
+- Restaurant_id
+- Restaurant_Name
+- Region_Id
+- (Other Relevant Demographic_info_cols)
+- Account_creation_date – life of the resturant
+- Number_of_orders
+- L7_ Number of_ orders (last 7 days)
+- L28_ Number of_ orders (last 28 days)
+- Menu_items (a json)
+- Opening_Hour
+- Closing_Hour
+- Food_Category (fast_food, healthy, etc)
 
 
 2) Next, what are the fact tables? Recall that there could be multiple fact tables, and this
@@ -60,30 +60,30 @@ problem is the perfect place for that. Activity based tables deserve their own f
 such as the following. One row per different activity. so there can be multiple rows per deliverer_id and customer_id
 
 o Fact_deliverer_activity
- Session_id
- Deliverer_id
- Region_id
- Timestamp
- Activity_type –
+- Session_id
+- Deliverer_id
+- Region_id
+- Timestamp
+- Activity_type –
 login/update_account_info/available_to_pickup/accept_order/Cancel_order/arrive_to_restaurant/picks_up_order/drops_off_order
 
 o Fact_customer_activity
- Session_id
- Customer_id
- Region_id
- Timestamp
- Activity_type – login/update_account_info/available_to_order/places_order/Cancels_order/receives_order/rates_driver/tips_driver
+- Session_id
+- Customer_id
+- Region_id
+- Timestamp
+- Activity_type – login/update_account_info/available_to_order/places_order/Cancels_order/receives_order/rates_driver/tips_driver
 
 
 3) Are there any entities that interact often that you can then create a fact table from? We  know that the two fact tables above interest, so let’s create one more fact table:
 
 o Fact_order_activity
- Order_id
- Deliverer_id
- Customer_id
- Region_id
- Timestamp
- Activity_type – (places_order/driver_picks_up_order/driver_drops_off_order)
+- Order_id
+- Deliverer_id
+- Customer_id
+- Region_id
+- Timestamp
+- Activity_type – (places_order/driver_picks_up_order/driver_drops_off_order)
 
 
 4) Finally, is there any Dimension table needed for the fact table above? Yes. This concept
@@ -91,14 +91,14 @@ is called “creating a wide table” or “flattening out” the fact_order_act
 part 3.
 
 o Dim_orders – have ONE RECORD per interaction (one record per order id). so all the orders in the activity table are collapsed into this dimension table. All the activity type times are recorded in columns for each order id row)
- Order_id
- Deliverer_id
- Customer_id
- Region_id
- places_order_time
- deliverer_accepted_time
- deliverer_picks_up_order_time
- deliverer_drops_off_order_time
+- Order_id
+- Deliverer_id
+- Customer_id
+- Region_id
+- places_order_time
+- deliverer_accepted_time
+- deliverer_picks_up_order_time
+- deliverer_drops_off_order_time
 
 
 

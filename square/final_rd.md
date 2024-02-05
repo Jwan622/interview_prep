@@ -14,7 +14,7 @@ Analytical Thinking | The goal of this interview is to assess your analytical sk
 
 
 **Data Modeling, ETL & Data Architecture (45min)**
-- [fundamentals of dimensional data modeling](data_modeling.md)
+- [fundamentals of dimensional data modeling](../data_engineering/data_modeling_part2.md)
 - efficient data modeling design (from requirement gathering, determining the right questions to ask, data onboarding case study)
 - ETL development lifecycle & optimization, debugging
 - handling raw data, data cleaning, transformation, and data warehouse management
@@ -25,7 +25,7 @@ _Some suggestions_
 - case study: generate revenue report over time case study. How would you do this over time?
 - If you have a location data from merchant, merchant data might include name, contact information, address and payment data, basic payment data, how do you approach building the data pipeline and moving data into the data warehouse
 
-Answer in [link to answer](./final_rd_part_1.md)
+Answer in [link to answer](../data_engineering/data_engineering_part1.md)
 
 **Analytics Thinking (45min)**
 - case study of generating a data report based on given business requirements (figuring out the correct metrics, adding dimensions,

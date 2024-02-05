@@ -7,4 +7,4 @@ Why is skew bad?
     - When data is unevenly distributed across nodes, some nodes may be overloaded with excessive data, while others remain underutilized. The overall performance is limited by the slowest node. Skewed data can create bottlenecks on certain nodes, slowing down the entire data processing pipeline.
 - [more on data skew](https://www.linkedin.com/pulse/challenges-skewed-data-join-hadoop-spark-benefits-broadcast-dip/)
 
-- [broadcast join](./broadcast_join.md)
+- [broadcast join](../square/broadcast_join.md)
