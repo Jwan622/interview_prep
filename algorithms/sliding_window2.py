@@ -1,6 +1,6 @@
-def max_sum_subarray_of_size_k(arr,k):
-    max_sum = float('-inf')
+def max_sum_subarray_of_size_k(arr, k):
     window_sum = 0
+    max_sum = 0
     window_start = 0
 
     # Slide window across array
@@ -20,5 +20,13 @@ def max_sum_subarray_of_size_k(arr,k):
 
 
 arr = [1,3,-1,-3,5,3,6,7]
-k = 3
-print(max_sum_subarray_of_size_k(arr, k))
+assert max_sum_subarray_of_size_k(arr, 3) == 16, 'test 1 does not equal 16 even though it should'
+
+arr = [1,2, 3, 4]
+assert max_sum_subarray_of_size_k(arr, 3) == 9, 'test 2 does not equal 9 even though it should'
+
+arr = [4, 3, 2, 1]
+assert max_sum_subarray_of_size_k(arr, 3) == 9, 'test 3 does not equal 9 even though it should'
+
+arr = [0, 0, 0, 1]
+assert max_sum_subarray_of_size_k(arr, 3) == 1, 'test 2 does not equal 1 even though it should'
