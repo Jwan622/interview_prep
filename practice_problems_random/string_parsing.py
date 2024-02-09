@@ -52,3 +52,6 @@ logs1 = [
 ]
 action1 = "LOGOUT"
 assert parse_logs(logs1, action1) == 2, "simple test 2 did not pass"
+
+
+
