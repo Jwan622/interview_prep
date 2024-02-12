@@ -31,6 +31,9 @@ def calculate_totals(cart):
 def calculate_coupons(aggregate_totals_per_category, coupons):
     coupon_amounts_to_apply = {}
     for coupon in coupons:
+        if isinstance(coupon['category'], str):
+            coupon['category'] = [coupon['category']]
+
         percent_discount = (coupon['percent_discount'] or 0) * 0.01
         amount_discount = coupon['amount_discount']
 
@@ -73,6 +76,10 @@ def apply_coupons(coupon_amounts_to_apply, aggregate_totals_per_category):
 
 
 def some_function(cart, coupons):
+    # section 0, convert single coupons into an array with one coupon
+    if isinstance(coupons, dict):
+        coupons = [coupons]
+
     # section 1:
     # let's build up totals, amount and number of items in a tuple
     # data should look like:
@@ -97,14 +104,14 @@ def some_function(cart, coupons):
     # apply coupons
     return apply_coupons(coupon_amounts_to_apply, aggregate_totals_per_category)
 
-
+# integration tests
 print('test 1 ==========================')
-coupon_test_1 = [{'category': ['fruit'],
+coupon_test_1 = {'category': 'fruit',
                   'percent_discount': 10,
                   'amount_discount': None,
                   'minimum_num_items_required': 2,
                   'minimum_amount_required': 10.00
-                  }]
+                }
 # Example Cart
 cart_test_1 = [{'price': 100.00, 'category': 'fruit'},
                {'price': 20.00, 'category': 'toy'},
@@ -114,12 +121,12 @@ cart_test_1 = [{'price': 100.00, 'category': 'fruit'},
 assert some_function(cart_test_1, coupon_test_1) == 295, 'simple test 1 case does not pass'
 
 print('test 2============================================================')
-coupon_test_2 = [{'category': ['fruit'],
+coupon_test_2 = {'category': 'fruit',
                   'percent_discount': 10,
                   'amount_discount': None,
                   'minimum_num_items_required': 2,
                   'minimum_amount_required': 10.00
-                  }]
+                  }
 # Example Cart
 cart_test_2 = [{'price': 0, 'category': 'fruit'},
                {'price': 20.00, 'category': 'toy'},
@@ -129,12 +136,12 @@ cart_test_2 = [{'price': 0, 'category': 'fruit'},
 assert some_function(cart_test_2, coupon_test_2) == 205, 'simple test 2 case does not pass'
 
 print('test 2.5============================================================')
-coupon_test_25 = [{'category': ['fruit'],
+coupon_test_25 = {'category': 'fruit',
                    'percent_discount': None,
                    'amount_discount': 6,
                    'minimum_num_items_required': 2,
                    'minimum_amount_required': 10.00
-                   }]
+                 }
 # Example Cart
 cart_test_25 = [{'price': 0, 'category': 'fruit'},
                 {'price': 20.00, 'category': 'toy'},
@@ -145,12 +152,12 @@ assert some_function(cart_test_25,
                      coupon_test_25) == 194 + 5 + 20, 'simple test 2.5 case does not pass for fixed amounts'
 
 print('test 3==========================================')
-coupon_test_3 = [{'category': ['toy'],
+coupon_test_3 = {'category': 'toy',
                   'percent_discount': 20,
                   'amount_discount': None,
                   'minimum_num_items_required': 2,
                   'minimum_amount_required': 10.00
-                  }]
+                }
 # Example Cart
 cart_test_3 = [{'price': 100, 'category': 'fruit'},
                {'price': 20.00, 'category': 'toy'},
@@ -160,12 +167,12 @@ cart_test_3 = [{'price': 100, 'category': 'fruit'},
 assert some_function(cart_test_3, coupon_test_3) == 325, 'simple test 3 case does not pass'
 
 print('test 35==========================')
-coupon_test_35 = [{'category': ['toy'],
+coupon_test_35 = {'category': 'toy',
                    'percent_discount': 20,
                    'amount_discount': None,
                    'minimum_num_items_required': 4,
                    'minimum_amount_required': 10.00
-                   }]
+                }
 # Example Cart
 cart_test_35 = [{'price': 100, 'category': 'fruit'},
                 {'price': 30.00, 'category': 'toy'},
@@ -179,12 +186,12 @@ assert some_function(cart_test_35,
                      coupon_test_35) == 305 + 80, 'simple test 35 where all items are valid toys to discount case does not pass'
 
 print('test 4 ==========================')
-coupon_test_4 = [{'category': ['toy'],
+coupon_test_4 = {'category': 'toy',
                   'percent_discount': 20,
                   'amount_discount': None,
                   'minimum_num_items_required': 4,
                   'minimum_amount_required': 10.00
-                  }]
+                }
 # Example Cart
 cart_test_4 = [{'price': 100, 'category': 'fruit'},
                {'price': 30.00, 'category': 'toy'},
@@ -198,12 +205,12 @@ assert some_function(cart_test_4,
                      coupon_test_4) == 305 + 80, 'simple test 4 where all category matched items are valid to discount'
 
 print('test 5 ==========================')
-coupon_test_5 = [{'category': ['this cateogyr does not exist'],
+coupon_test_5 = {'category': 'this cateogyr does not exist',
                   'percent_discount': 20,
                   'amount_discount': None,
                   'minimum_num_items_required': 2,
                   'minimum_amount_required': 10.00
-                  }]
+                  }
 # Example Cart
 cart_test_5 = [{'price': 100, 'category': 'fruit'},
                {'price': 20.00, 'category': 'toy'},
@@ -221,7 +228,7 @@ coupon_test_6 = [
      'minimum_num_items_required': None,
      'minimum_amount_required': None
      },
-    {'category': ['fruit'],
+    {'category': 'fruit',
      'percent_discount': 15,
      'amount_discount': None,
      'minimum_num_items_required': 2,
@@ -244,7 +251,7 @@ coupon_test_65 = [
      'minimum_num_items_required': None,
      'minimum_amount_required': None
      },
-    {'category': ['fruit'],
+    {'category': 'fruit',
      'percent_discount': 15,
      'amount_discount': None,
      'minimum_num_items_required': 2,
@@ -261,3 +268,91 @@ assert some_function(cart_test_65,
                      coupon_test_65) == 85 + 20 + 45, 'test amount discount multi cateegory with percent does not pass'
 
 
+
+# unit tests
+cart_test_1 = [{'price': 100.00, 'category': 'fruit'},
+               {'price': 20.00, 'category': 'toy'},
+               {'price': 5.00, 'category': 'clothing'},
+               {'price': 200.00, 'category': 'fruit'}
+               ]
+assert calculate_totals(cart_test_1) == {
+    "fruit": (300, 2),
+    "toy": (20.00, 1),
+    "clothing": (5.00, 1)
+}
+
+cart_test_2 = [{'price': 100.00, 'category': 'fruit'},
+               {'price': 0.00, 'category': 'toy'}
+               ]
+assert calculate_totals(cart_test_2) == {
+    "fruit": (100.00, 1),
+    "toy": (0.00, 1)
+}
+
+# unit tests for coupon calculation
+coupon_test_8 = [{'category': 'fruit',
+                  'percent_discount': 10,
+                  'amount_discount': None,
+                  'minimum_num_items_required': 2,
+                  'minimum_amount_required': 10.00
+                }]
+aggregate_totals_1 = {
+    "fruit": (100.00, 1),
+    "toy": (0.00, 1)
+}
+assert calculate_coupons(aggregate_totals_1, coupon_test_8) == {}, 'unit test 1 for coupon calculation did not pass'
+
+coupon_test_9 = [{'category': 'fruit',
+                  'percent_discount': 10,
+                  'amount_discount': None,
+                  'minimum_num_items_required': 2,
+                  'minimum_amount_required': 10.00
+                }]
+aggregate_totals_2 = {
+    "fruit": (100.00, 2),
+    "toy": (0.00, 1)
+}
+
+assert calculate_coupons(aggregate_totals_2, coupon_test_9) == {"fruit": 10}, 'unit test 2 for coupon calculation did not pass'
+
+coupon_test_10 = [{'category': 'fruit',
+                  'percent_discount': None,
+                  'amount_discount': 15,
+                  'minimum_num_items_required': 2,
+                  'minimum_amount_required': 10.00
+                }]
+aggregate_totals_3 = {
+    "fruit": (100.00, 2),
+    "toy": (0.00, 1)
+}
+
+assert calculate_coupons(aggregate_totals_3, coupon_test_10) == {"fruit": 15}, 'unit test 3 for coupon calculation did not pass'
+
+coupon_test_115 = [{'category': ['fruit', 'clothing'],
+                  'percent_discount': 10,
+                  'amount_discount': None,
+                  'minimum_num_items_required': 2,
+                  'minimum_amount_required': 10.00
+                }]
+aggregate_totals_45 = {
+    "fruit": (100.00, 2),
+    "toy": (200.00, 2),
+    "clothing": (105, 1)
+}
+
+assert calculate_coupons(aggregate_totals_45, coupon_test_115) == {"fruit": 10}, 'unit test 45 (multi category) for coupon calculation did not pass'
+
+
+coupon_test_12 = [{'category': ['fruit', 'toy'],
+                  'percent_discount': None,
+                  'amount_discount': 15,
+                  'minimum_num_items_required': 2,
+                  'minimum_amount_required': 10.00
+                }]
+aggregate_totals_5 = {
+    "fruit": (100.00, 2),
+    "toy": (200.00, 2),
+    "clothing": [105,1]
+}
+# if the amounts are equal, our logic codes that both apply
+assert calculate_coupons(aggregate_totals_5, coupon_test_12) == {"fruit": 15, 'toy': 15}, 'unit test 5 (multi category) for coupon calculation did not pass'
