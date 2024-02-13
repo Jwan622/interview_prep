@@ -269,7 +269,7 @@ assert some_function(cart_test_65,
 
 
 
-# unit tests
+# unit tests for calculating initial totals
 cart_test_1 = [{'price': 100.00, 'category': 'fruit'},
                {'price': 20.00, 'category': 'toy'},
                {'price': 5.00, 'category': 'clothing'},
@@ -356,3 +356,26 @@ aggregate_totals_5 = {
 }
 # if the amounts are equal, our logic codes that both apply
 assert calculate_coupons(aggregate_totals_5, coupon_test_12) == {"fruit": 15, 'toy': 15}, 'unit test 5 (multi category) for coupon calculation did not pass'
+
+# unit testing for apply coupons
+coupons_to_apply_1 = {"fruit": 15, 'toy': 15}
+aggregate_totals_6 = {
+    "fruit": (100.00, 2),
+    "toy": (200.00, 2),
+    "clothing": (105,1)
+}
+# if the amounts are equal, our logic codes that both apply
+assert apply_coupons(coupons_to_apply_1, aggregate_totals_6) == 375, 'unit test 1 for applying coupons did not pass'
+
+
+# unit testing for apply coupons
+coupons_to_apply_2 = {"fruit": 25}
+aggregate_totals_7 = {
+    "fruit": (100.00, 2),
+    "toy": (200.00, 2),
+    "clothing": (105,1)
+}
+# if the amounts are equal, our logic codes that both apply
+assert apply_coupons(coupons_to_apply_2, aggregate_totals_7) == 380, 'unit test 2 applying coupons did not pass'
+
+
