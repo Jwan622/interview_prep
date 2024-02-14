@@ -1,4 +1,5 @@
 Here is some test sql:
+this model assumes orders belong to a company but a company is from one country. So orders aren't from different countries.
 
 ```postgresql
 CREATE TABLE Company (
@@ -95,4 +96,33 @@ WITH OrderSums AS (
 SELECT Country, CompanyName, TotalOrderAmount, Rank
 FROM OrderSums
 WHERE Rank <= 3;
+```
+
+
+jsut run that to see. Also see how this works too to explain why you need the double GROUP BY and why you're partitioning by `Country`.
+
+
+the below highlights that you need the group by both to get the order amount or order count on a per country and per company basis. And then you can rank it and partition by country to get the top 3 per country by order count/amount per country.
+```
+SELECT
+        c.CompanyName,
+        SUM(o.OrderAmount) AS TotalOrderAmount,
+        RANK() OVER (PARTITION BY c.CompanyName ORDER BY SUM(o.OrderAmount) DESC) AS Rank
+    FROM Company c
+    JOIN Orders o ON c.CompanyID = o.CompanyID
+    GROUP BY c.CompanyName
+;
+            companyname            | totalorderamount | rank
+-----------------------------------+------------------+------
+ Data Anaulytics Inc.               |         55900.00 |    1
+ Eco Friendly Co.                  |          1000.00 |    1
+ Global Tech_should_be_first       |           101.00 |    1
+ Green Solutions                   |           450.00 |    1
+ Renewable Tech                    |           100.00 |    1
+ Tech Innovations                  |          1400.00 |    1
+ Tech Pioneers                     |          1600.00 |    1
+ companyId_3_usa                   |           650.00 |    1
+ companyId_4_usa_should_not_appear |           150.00 |    1
+ company_should_not_appear_canada  |             1.00 |    1
+(10 rows)
 ```
