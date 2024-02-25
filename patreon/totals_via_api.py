@@ -189,61 +189,83 @@ import requests
 URL = 'https://jsonmock.hackerrank.com/api/transactions/search'
 
 
-def some_function():
-    response = requests.get(URL).json()
-    total_pages = response['total_pages']
-    total_data = []
-    for page_number in range(total_pages):
-        response = requests.get(URL + '?' + f"page={page_number + 1}").json()
-        total_data += response['data']
+# def some_function():
+#     response = requests.get(URL).json()
+#     total_pages = response['total_pages']
+#     total_data = []
+#     for page_number in range(total_pages):
+#         response = requests.get(URL + '?' + f"page={page_number + 1}").json()
+#         total_data += response['data']
+#
+#     final_ledger = {}
+#
+#     # aggregate credits and ebits
+#     for data in total_data:
+#         print(data)
+#         is_credit = data['txnType'] == 'credit'
+#         credit_amount = float(data['amount'].replace('$', '').replace(',', '')) if is_credit else 0
+#         debit_amount = float(data['amount'].replace('$', '').replace(',', '')) if not is_credit else 0
+#
+#         username = data['userName']
+#         if username not in final_ledger:
+#             final_ledger[username] = (data['userId'], credit_amount, debit_amount)
+#         else:
+#             final_ledger[username] = (final_ledger[username][0], final_ledger[username][1] + credit_amount,
+#                                       final_ledger[username][2] + debit_amount)
+#
+#     print('final_ledger', final_ledger)
+#
+#     thing_to_return = []
+#     # clean data structure
+#     for key, value in final_ledger.items():
+#         thing_to_return.append({
+#             'user_name': key,
+#             'total': value[1] - value[2],
+#             'id': value[0]
+#         })
+#
+#     print(thing_to_return)
 
-    final_ledger = {}
 
-    # aggregate credits and ebits
-    for data in total_data:
-        print(data)
-        is_credit = data['txnType'] == 'credit'
-        credit_amount = float(data['amount'].replace('$', '').replace(',', '')) if is_credit else 0
-        debit_amount = float(data['amount'].replace('$', '').replace(',', '')) if not is_credit else 0
-
-        username = data['userName']
-        if username not in final_ledger:
-            final_ledger[username] = (data['userId'], credit_amount, debit_amount)
-        else:
-            final_ledger[username] = (final_ledger[username][0], final_ledger[username][1] + credit_amount,
-                                      final_ledger[username][2] + debit_amount)
-
-    print('final_ledger', final_ledger)
-
-    thing_to_return = []
-    # clean data structure
-    for key, value in final_ledger.items():
-        thing_to_return.append({
-            'user_name': key,
-            'total': value[1] - value[2],
-            'id': value[0]
-        })
-
-    print(thing_to_return)
-
-
-assert some_function()['Helena Fernandez'] == '$1,248.68', 'simple test case 1 one credit should pass'
-assert some_function()['Francesco De Mello'] == '$1,248.68', 'simple test case 2 two credids should pass'
+# assert some_function()['Helena Fernandez'] == '$1,248.68', 'simple test case 1 one credit should pass'
+# assert some_function()['Francesco De Mello'] == '$1,248.68', 'simple test case 2 two credids should pass'
 
 # https://jsonmock.hackerrank.com/api/transactions/search?page=110
+from decimal import Decimal
+URL = 'https://jsonmock.hackerrank.com/api/transactions/search'
+def some_function():
+    response = requests.get(URL).json()
+    final_records = {}
+    for page_number in range(response['total_pages']):
+        page_data = requests.get(URL + '?' + f"page={page_number + 1}").json()['data']
+        calculate_individual_totals(final_records, page_data)
+
+    return final_records.values()
+
+
+def calculate_individual_totals(accumulator, page_data):
+    for transaction in page_data:
+        total_amount = 0
+        unique_key = transaction['userName'] + str(transaction['userId'])
+        user_id = transaction['userId']
+        name = transaction['userName']
+        cleaned_amount = Decimal(transaction['amount'].replace('$', '').replace(',', ''))
+        if transaction['txnType'] == 'debit':
+            total_amount -= cleaned_amount
+        else:
+            total_amount += cleaned_amount
+
+        if unique_key in accumulator:
+            accumulator[unique_key]['total_amount'] += total_amount
+        else:
+            accumulator[unique_key] = {'total_amount': total_amount, 'userId': user_id, 'name': name}
+
+    return accumulator
 
 
 
-
-
-
-
-
-
-
-
-
-
+page_data = [{'id': 1, 'userId': 1, 'userName': 'John Oliver', 'timestamp': 1549536882071, 'txnType': 'debit', 'amount': '$100', 'location': {'id': 7, 'address': '770, Deepends, Stockton Street', 'city': 'Ripley', 'zipCode': 44139}, 'ip': '212.215.115.165'}, {'id': 2, 'userId': 2, 'userName': 'Bob Martin', 'timestamp': 1549260902604, 'txnType': 'debit', 'amount': '$200', 'location': {'id': 8, 'address': '389, Everest, Barwell Terrace', 'city': 'Murillo', 'zipCode': 66061}, 'ip': '212.215.115.165'}, {'id': 3, 'userId': 2, 'userName': 'Bob Martin', 'timestamp': 1549530365037, 'txnType': 'credit', 'amount': '$2', 'location': {'id': 1, 'address': '948, Entroflex, Franklin Avenue', 'city': 'Ilchester', 'zipCode': 84181}, 'ip': '142.216.23.1'}, {'id': 4, 'userId': 1, 'userName': 'John Oliver', 'timestamp': 1549272069586, 'txnType': 'credit', 'amount': '$0.50', 'location': {'id': 8, 'address': '389, Everest, Barwell Terrace', 'city': 'Murillo', 'zipCode': 66061}, 'ip': '119.162.205.226'}]
+assert calculate_individual_totals({}, page_data) == {'John Oliver1': {'name': 'John Oliver', 'total_amount': -99.50, 'userId': 1}, 'Bob Martin2': {"name": 'Bob Martin', 'userId': 2, 'total_amount': -198}}
 
 
 
