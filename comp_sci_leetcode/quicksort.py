@@ -1,5 +1,5 @@
 # Here's a simple version of Quicksort with recursion
-# the algo works by finding a pivot (any random number but here we use the high index
+# the algo.py works by finding a pivot (any random number but here we use the high index
 # we move all elements smaller than the pivot to the left
 # we move all elements bigger than the pivot to the right
 def quicksort(arr):
