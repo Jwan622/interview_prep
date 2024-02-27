@@ -58,14 +58,15 @@ def analyze_logs():
     aggregate_data = build_aggregate_data(logs)
     return prepare(aggregate_data)
 
-
+import re
 def anonymize_path(path):
-    splitted = path.split('/')
-    for index, part in enumerate(splitted):
-        if part == 'users':
-            splitted[index + 1] = '{user_id}'
-    thing_to_return ='/'.join(splitted)
-    return thing_to_return
+    return re.sub('\d+', '{user_id}', path)
+    # splitted = path.split('/')
+    # for index, part in enumerate(splitted):
+    #     if part == 'users':
+    #         splitted[index + 1] = '{user_id}'
+    # thing_to_return ='/'.join(splitted)
+    # return thing_to_return
 
 
 def is_relevant_log(method, path):
