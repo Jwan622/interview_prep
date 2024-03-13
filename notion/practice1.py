@@ -58,10 +58,64 @@ print(f"Cities founded before the year 1500: {cities_founded_before_1500}")
 correlation = df['population'].corr(df['car_ownership_rate'])
 print(f"Correlation between population size and car ownership rate: {correlation}")
 
-# Define a function to round each coordinate to 3 decimal points
+# 9. transform each element in gps coordinates to 3 precision
 def round_coordinates(coord):
     print("coord", coord)
     return [round(c, 3) for c in coord]
 
 df['gps_coordinates'] = df['gps_coordinates'].apply(round_coordinates)
 print(f"rounded to 3 decimal places: {df['gps_coordinates']}")
+
+# 10. find city name and country with highest average temperate
+city_with_highest_temp = df.loc[df['average_temperature'].idxmax()]
+print('city with highest temp: ', city_with_highest_temp['name'], city_with_highest_temp['country'])
+
+#11. find city name and country with lowest transit tripcs per capita
+city_with_lowest_transit_trips = df.loc[df['transit_trips_per_capita'].idxmin()]
+print(f"city with lowest transit trips", city_with_lowest_transit_trips['name'], city_with_lowest_transit_trips['country'], city_with_lowest_transit_trips['transit_trips_per_capita'])
+
+#12. highest car ownership rate but in percentage format
+
+# # 13. how many cities were founded after 1800?
+# df['founded'] = df['founded'].apply(lambda x: x if '1677' <= x <= '2262' else pd.NaT)
+# # Convert 'founded' column to datetime format
+# df['founded'] = pd.to_datetime(df['founded'])
+#
+# # Extract year and month
+# df['year'] = df['founded'].dt.year
+# df['month'] = df['founded'].dt.month
+#
+# # Filter the DataFrame for cities founded after 1800
+# filtered_df = df[df['year'] > 1800]
+# print(f"cities_founded_after_1800: {filtered_df['name'].shape[0]}")
+
+# 14. how many cities were founded before 1800? This is interesting because pands can't handle certain rows before 1677 should be 14 cities
+df['founded'] = pd.to_datetime(df['founded'], errors='coerce')
+# Filter cities founded before 1800
+print('df founded using errors coerce', df['founded'])
+
+# the outer df will only return rows that are True
+# the inner comparison:
+# The expression df['founded'] < pd.Timestamp('1800-01-01') is performing a comparison between each value in the "founded" column of your DataFrame (df['founded']) and the specified timestamp pd.Timestamp('1800-01-01').
+# Each comparison evaluates whether the date in the "founded" column is before January 1, 1800. The result is a boolean Series where True indicates that the date is before 1800, and False indicates that it is not.
+# In your output, True values indicate that the date in the corresponding row is before January 1, 1800, while False values indicate that it is not. It appears that only one row (index 17) has a date before 1800 in your DataFrame.
+# If you want to retrieve the entire row(s) where the condition df['founded'] < pd.Timestamp('1800-01-01') evaluates to True, you can use boolean indexing. That's what the outer df is doing
+cities_before_1800 = df[df['founded'] < pd.Timestamp('1800-01-01')]
+print('cities before 1800', cities_before_1800)
+
+# Filter cities with NaT values (i.e., invalid datetime strings)
+na_values = df['founded'].isna()
+print("na_values", na_values.sum())
+# Count the number of cities founded before 1800
+num_cities_before_1800 = len(cities_before_1800) + na_values.sum()
+
+print("Number of cities founded before 1800:", num_cities_before_1800)
+
+
+# when you use the sum() function on a boolean series in pandas, it counts the number of True values, treating True as 1 and False as 0. So, it effectively counts the number of occurrences where the condition is True.
+# 15. How many cities have an area under 1000?
+
+area_under_1000 = df['area'] < 1000
+print("area udner 1000", area_under_1000.sum())
+
+
