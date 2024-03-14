@@ -18,6 +18,10 @@ Methods:
 df['timestamp'] = pd.to_datetime(df['timestamp']) to convert string to datetime
 df.sort_values + head(3)
 df = df[df['founded'] < pd.Timestamp('1800-01-01')]  to make new dataframe with only rows where founded is before 1800
+
+to groupby and sort and take top 5:
+new_df = df.groupby(by=df['ProductID'], as_index=False)['Total_Rev'].sum()
+top_products = new_df.sort_values(by='Total_Rev', ascending=False).head(5)
 '''
 print("original data frame: ", df)
 
