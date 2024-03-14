@@ -1,0 +1,7 @@
+Date,ProductID,ProductName,Category,Quantity,UnitPrice,CustomerID
+2023-01-01,1001,WidgetA,Electronics,2,299.99,501
+2023-01-15,1002,WidgetB,Home Goods,1,89.95,502
+2023-02-01,1003,WidgetC,Electronics,1,199.99,503
+2023-02-15,1001,WidgetA,Electronics,3,299.99,501
+2023-03-01,1004,WidgetD,Home Goods,2,49.95,504
+2023-03-15,1005,WidgetE,Books,5,9.99,505

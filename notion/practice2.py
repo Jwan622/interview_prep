@@ -1,4 +1,8 @@
 import pandas as pd
+pd.set_option('display.max_columns', None)  # No column limit
+pd.set_option('display.max_rows', None)  # No row limit
+pd.set_option('display.width', None)  # Auto-detect the display width
+
 
 # 1. only for orders before 2000, apply coupon discounts to prices, and only for vege and fruit. sum up the cart.
 # Creating a sample DataFrame
@@ -13,11 +17,22 @@ data = {
 df = pd.DataFrame(data)
 print("Original DataFrame:", df)
 df['timestamp'] = pd.to_datetime(df['timestamp'])
-df = df[df['timestamp'].dt.year < 2000]
 
+# this is how you filter: df = df[(df['Date'] > "2018-01-01") & (df['Date'] < "2019-07-01")]
+'''
+# filter by single day
+df_filtered = df[df['date'].dt.strftime('%Y-%m-%d') == '2014-01-01']
 
-df['discounted_dollars'] = df.apply(lambda x: x['Price'] * x['Discount'] if x['Type'] in ['Fruit', 'Vege'] else 0, axis=1).round(2)
-df['discounted_price'] = df['Price'] - df['discounted_dollars'].round(2)
+# filter by single month
+df_filtered = df[df['date'].dt.strftime('%Y-%m') == '2014-01']
+
+# filter by single year
+df_filtered = df[df['date'].dt.strftime('%Y') == '2014']
+'''
+df = df[df['timestamp'].dt.strftime('%Y') < '2000']
+print('time filtered df: \n', df)
+df['discounted_dollars'] = df.apply(lambda x: print('x \n', x) and x['Price'] * x['Discount'] if x['Type'] in ['Fruit', 'Vege'] else 0, axis=1).round(2)
+df['discounted_price'] = (df['Price'] - df['discounted_dollars']).round(2)
 total_cart = df['discounted_price'].sum()
 print("new df \n", df)
 print("Total cart:", total_cart)

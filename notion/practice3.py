@@ -48,8 +48,13 @@ Effect on the DataFrame: By calling reset_index(level=0), you effectively move t
 
 Without reset_index: The DataFrame maintains its hierarchical index, with both user and product_id serving as row identifiers.
 With reset_index(level=0): The user field is "demoted" from being part of the index to being a regular column, leaving product_id as the sole index.
+
+If you want to sort the grouped data by both user and amount, you should ensure that the result of the groupby operation is a DataFrame, which allows specifying columns in sort_values. You can achieve this by not selecting a single column (['amount']) to sum, thus keeping the result as a DataFrame with multiple columns. Here's how you can adjust your code:
+
+as_index=False in the groupby method call ensures that the grouping keys (user, product_id) are not set as the index, which keeps the result as a DataFrame. you can also use reset_index which also eliminates teh index
 '''
-new_df = df.groupby(['user', 'product_id']).sum()
+# new_df = df.groupby(['user', 'product_id'], as_index=False).sum()
+new_df = df.groupby(['user', 'product_id']).sum().reset_index()
 # new_df = df.groupby(['user', 'product_id']).sum() // this is without reset -index
 print('new_df with new index and reset index \n', new_df)
 new_df = new_df.sort_values(by=['user', 'amount'], ascending=[True, False])

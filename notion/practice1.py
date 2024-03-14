@@ -15,8 +15,9 @@ Identify the city with the highest elevation and report its name, country, and e
 
 
 Methods:
+df['timestamp'] = pd.to_datetime(df['timestamp']) to convert string to datetime
 df.sort_values + head(3)
-
+df = df[df['founded'] < pd.Timestamp('1800-01-01')]  to make new dataframe with only rows where founded is before 1800
 '''
 print("original data frame: ", df)
 
