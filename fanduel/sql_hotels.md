@@ -94,3 +94,21 @@ ORDER BY and LIMIT: Finally, the results are ordered by the booking count in des
 
 
 
+SELECT 
+    hotel_name, 
+    booking_count
+FROM (
+    SELECT 
+        h.name AS hotel_name, 
+        COUNT(b.id) AS booking_count,
+        RANK() OVER (ORDER BY COUNT(b.id) DESC) AS rnk
+    FROM 
+        bookings b
+    INNER JOIN 
+        hotels h ON h.id = b.hotel_id
+    WHERE 
+        b.date >= CURRENT_DATE - INTERVAL '2 months'
+    GROUP BY 
+        h.name
+) AS ranked_hotels
+WHERE rnk = 1;
