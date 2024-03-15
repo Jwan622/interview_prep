@@ -16,7 +16,6 @@ to
 } dammit just got it
 """
 
-
 # def do_the_magic(flattened_list, value_could_be_string_or_dict, built_key):
 #     if not isinstance(value_could_be_string_or_dict, dict): # base case
 #         flattened_list[built_key] = value_could_be_string_or_dict

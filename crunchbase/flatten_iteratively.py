@@ -1,3 +1,4 @@
+# I like my other solution in the other file better
 def flatten_dict_iteratively(d, sep='_'):
     dict_flattened = {}
 
@@ -16,7 +17,7 @@ def flatten_dict_iteratively(d, sep='_'):
                 print('v is a dict instance: ', v)
                 stack.append((path + (k,), v))
             else:
-                print('in else')
+                print('in else and this is what the sep.join looks like', sep.join((path + (k,))))
                 dict_flattened[sep.join((path + (k,)))] = v
 
     return dict_flattened
