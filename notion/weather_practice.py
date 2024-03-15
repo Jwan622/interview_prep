@@ -37,5 +37,17 @@ print('max temps\n ', max_temps)
 
 
 # 6 means for all columns and group by station
-averages = data.groupby('StationID')[['WindSpeed', 'Rainfall']].mean().round(3)
+averages = data.groupby('StationID')[['WindSpeed', 'Rainfall', 'Humidity', 'Temperature']].mean().round(3)
 print('all averages', averages)
+
+
+#7 use period to figure out rows before 1900
+def convert(date):
+    return pd.Period(date, freq='D')
+
+data['Date'] = data['Date'].apply(convert)
+
+# Filter rows where the 'Date' is before 1900
+# Use apply to access the 'year' attribute of each Period object in the Series
+filtered = data[data['Date'].apply(lambda x: x.year) < 1900]
+print('filtered: \n', filtered)
