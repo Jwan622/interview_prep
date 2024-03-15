@@ -29,9 +29,10 @@ df_filtered = df[df['date'].dt.strftime('%Y-%m') == '2014-01']
 # filter by single year
 df_filtered = df[df['date'].dt.strftime('%Y') == '2014']
 '''
-df = df[df['timestamp'].dt.strftime('%Y') < '2000']
+# df = df[df['timestamp'].dt.strftime('%Y') < '2000']
+df = df[df['timestamp'].dt.year < 2000]
 print('time filtered df: \n', df)
-df['discounted_dollars'] = df.apply(lambda x: print('x \n', x) and x['Price'] * x['Discount'] if x['Type'] in ['Fruit', 'Vege'] else 0, axis=1).round(2)
+df['discounted_dollars'] = df.apply(lambda x: x['Price'] * x['Discount'] if x['Type'] in ['Fruit', 'Vege'] else 0, axis=1).round(2)
 df['discounted_price'] = (df['Price'] - df['discounted_dollars']).round(2)
 total_cart = df['discounted_price'].sum()
 print("new df \n", df)

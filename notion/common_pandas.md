@@ -29,3 +29,10 @@ pd.set_option('display.width', None)
 data = pd.read_json('sample_data.json', lines=True)
 print('data', data)
 ```
+
+
+3. modify using loc
+Use loc to modify the original DataFrame directly, if that's what you intend. This makes it clear that you are modifying the original DataFrame:
+```
+df.loc[df['Column'] > value, 'NewColumn'] = some_value
+```
