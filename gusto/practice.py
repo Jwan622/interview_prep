@@ -33,6 +33,7 @@ do not aggregate at the user level, aggregate on the pattern level like this pat
 
 import urllib.request
 import re
+from collections import defaultdict
 
 SMALL_FILE_URL = 'https://gist.githubusercontent.com/bss/6dbc7d4d6d2860c7ecded3d21098076a/raw/244045d24337e342e35b85ec1924bca8425fce2e/sample.small.log'
 
@@ -53,10 +54,10 @@ WE_CARE = [
 ]
 
 def anonymize(path):
-    return re.sub('\d+', '{user_id}', path)
+    return re.sub('/users/\d+', '/users/{user_id}', path)
 
 def process(split_content):
-    temp_holder = {}
+    temp_holder = defaultdict(lambda: {'count': 0, 'times': 0})
     for log in split_content:
         timestamp, router, at, method, path, host, fwd, dyno, connect, service, status, byte = log.split(' ')
         method_and_path = anonymize(method.split('=')[1] + ' ' + path.split('=')[1])
@@ -64,30 +65,21 @@ def process(split_content):
         connect_and_service = int(connect.split('=')[1].replace('ms', '')) + int(service.split('=')[1].replace('ms', ''))
         print('method and path', method_and_path)
 
-        if method_and_path in WE_CARE:
-            if method_and_path in temp_holder:
-                temp_holder[method_and_path].append(connect_and_service)
-            else:
-                temp_holder[method_and_path] = [connect_and_service]
+        if any(care == method_and_path for care in WE_CARE):
+            temp_holder[method_and_path]['count'] += 1
+            temp_holder[method_and_path]['times'] += connect_and_service
 
     final = []
     for key, val in temp_holder.items():
         final.append(
             {
                 "request_identifier": key,
-                "called": len(val),
-                "response_time_mean": sum(val) / len(val),
+                "called": val['count'],
+                "response_time_mean": val['times'] / val['count']
             }
         )
 
     return final
-
-
-
-
-
-
-
 
 
 test_data = [
@@ -100,6 +92,7 @@ test_data = [
     '2014-01-09T06:15:15.893505+00:00 heroku[router]: at=info method=GET path=/api/users/1686318645/get_friends_progress host=mygame.heroku.com fwd="1.125.42.139" dyno=web.3 connect=8ms service=90ms status=200 bytes=7534'
 ]
 expected = process(test_data)
+
 assert expected == [
     {'request_identifier': 'GET /api/users/{user_id}/count_pending_messages', 'called': 1, 'response_time_mean': 18.0},
     {'request_identifier': 'POST /api/users/{user_id}', 'called': 2, 'response_time_mean': 31.5},
