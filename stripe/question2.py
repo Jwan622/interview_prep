@@ -83,12 +83,15 @@ def count_switches(input_switches):
     split_groups = []
     current_char = input_switches[0]
     current_group = current_char
-    for char_index in range(1, len(input_switches)):
-        if input_switches[char_index] == current_char:
+    for index, char in enumerate(input_switches):
+        if index == 0 or index >= len(input_switches) - 2:
+            continue
+
+        if char == current_char:
             current_group += current_char
         else:
             split_groups.append(current_group)
-            current_char = input_switches[char_index]
+            current_char = char
             current_group = current_char
 
     split_groups.append(current_group)
@@ -99,8 +102,7 @@ def count_switches(input_switches):
             combined_length = len(split_groups[index - 1]) + len(split_groups[index + 1])
             zeros_to_flip = len(split_groups[index])
             holder.append((combined_length, zeros_to_flip))
-
-    min_num_zeros_to_flip = max(holder, key=lambda len_tuple: len_tuple[0])[1]
+    min_num_zeros_to_flip = max(holder, key=lambda len_tuple: (len_tuple[0], -len_tuple[1]))[1] # notice the tuple for secondary sort and notice the negation.
     return [number_of_ones, longest_consec_ones, longest_consec_zeroes, min_num_zeros_to_flip]
 
 test_string = "11001101111000000111"
@@ -114,6 +116,17 @@ actual = count_switches(test_string)
 print('actual: ', actual)
 assert actual == expected, f'actual: {actual}'
 
+
+test_string = "1100011001100000000001100000011"
+number_of_ones = 10
+longest_consec_ones = 2
+longest_onsec_zeroes = 10
+min_num_zeroes_flip = 2
+
+expected = [number_of_ones, longest_consec_ones, longest_onsec_zeroes, min_num_zeroes_flip]
+actual = count_switches(test_string)
+print('actual: ', actual)
+assert actual == expected, f'actual: {actual}'
 
 
 
