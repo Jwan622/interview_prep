@@ -47,7 +47,7 @@ def validate(header):
 
 def validate_whole_header(header):
     split_header = header.split(',')
-    if all(re.search('^[a-zA-Z]{2}-[a-zA-Z]{2}$', header.strip()) for header in split_header):
+    if all(re.search(r'^[a-zA-Z]{2}-[a-zA-Z]{2}$', header.strip()) for header in split_header):
         print('regex matched!')
         return True
     return False
