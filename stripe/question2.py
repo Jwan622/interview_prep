@@ -46,6 +46,8 @@ def count_switches(input_string):
     ones_count = 0
     longest_consec = 0
     current_longest = 0
+    longest_consec_off = 0
+    current_consec_off = 0
     switch_split = list(input_string)
     print('switch split: ', switch_split)
     for switch in switch_split:
@@ -54,11 +56,15 @@ def count_switches(input_string):
             current_longest += 1
             if current_longest > longest_consec:
                 longest_consec += 1
+            current_consec_off = 0
         else:
-             current_longest = 0
+            current_consec_off += 1
+            if current_consec_off > longest_consec_off:
+                longest_consec_off += 1
+            current_longest = 0
 
-    return [ones_count, longest_consec]
+    return [ones_count, longest_consec, longest_consec_off]
 
-test_string = "110011011110000111"
-expected = [11, 4]
+test_string = "11001101111000000111"
+expected = [11, 4, 6]
 assert count_switches(test_string) == expected, f'actual: {count_switches(test_string)}'
