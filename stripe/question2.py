@@ -41,3 +41,24 @@ string.strip(chars): Returns a trimmed version of the string where all character
 Regular expressions (via the re module) for complex pattern matching and manipulation.
 Would you like to dive into the code solution for this practice problem, or do you need more explanation on the string manipulation methods?
 '''
+
+def count_switches(input_string):
+    ones_count = 0
+    longest_consec = 0
+    current_longest = 0
+    switch_split = list(input_string)
+    print('switch split: ', switch_split)
+    for switch in switch_split:
+        if switch == '1':
+            ones_count += 1
+            current_longest += 1
+            if current_longest > longest_consec:
+                longest_consec += 1
+        else:
+             current_longest = 0
+
+    return [ones_count, longest_consec]
+
+test_string = "110011011110000111"
+expected = [11, 4]
+assert count_switches(test_string) == expected, f'actual: {count_switches(test_string)}'
