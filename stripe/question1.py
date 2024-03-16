@@ -40,13 +40,50 @@
 # parse_accept_language("en-US", ["en-US", "fr-CA"])
 # returns: ["en-US"]
 
+def validate(header):
+    return True if len(header) > 0 and header.find('-') >= 0 else False
+
+def normalize(header):
+    print('header: ', header)
+    left_header, right_header = header.split('-')
+    left_header = left_header.lower()
+    right_header = right_header.upper()
+    header = '-'.join([left_header, right_header])
+    return header.strip()
 
 def parse_accept_language(headers, accepted_languages):
-    headers_split = headers.split(',')
-    return [header.strip() for header in headers_split if header.strip() in accepted_languages]
+    headers_split = [normalize(header) for header in headers.split(',') if validate(header)]
+    deduped = []
+    [deduped.append(header) for header in headers_split if header not in deduped]
+    # deduped = list(set(headers_split))
+    return [header for header in deduped if header in accepted_languages]
 
 
 test_headers = "en-US, fr-CA, fr-FR"
 test_accepted = ["fr-FR", "en-US"]
 expected = ["en-US", "fr-FR"]
 assert parse_accept_language(test_headers, test_accepted) == expected, f"actual: {parse_accept_language(test_headers, test_accepted)}"
+
+
+test_headers = "EN-US, FR-CA, fr-fr"
+test_accepted = ["fr-FR", "en-US"]
+expected = ["en-US", "fr-FR"]
+assert parse_accept_language(test_headers, test_accepted) == expected, f"actual: {parse_accept_language(test_headers, test_accepted)}"
+
+test_headers = "en-US, fr-CA, fr-FR, EN-US"
+test_accepted = ["fr-FR", "en-US"]
+expected = ["en-US", "fr-FR"]
+assert parse_accept_language(test_headers, test_accepted) == expected, f"actual: {parse_accept_language(test_headers, test_accepted)}"
+
+
+test_headers = "en-US, fr-CA, fr,,, 123, fr-FR, EN-US,"
+test_accepted = ["fr-FR", "en-US"]
+expected = ["en-US", "fr-FR"]
+assert parse_accept_language(test_headers, test_accepted) == expected, f"actual: {parse_accept_language(test_headers, test_accepted)}"
+
+# follow-ups
+'''
+case sensitivity, how you would handle it
+validation, what kind of validation would you employ 
+duplicates handling
+'''
