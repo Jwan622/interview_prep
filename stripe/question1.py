@@ -39,3 +39,14 @@
 
 # parse_accept_language("en-US", ["en-US", "fr-CA"])
 # returns: ["en-US"]
+
+
+def parse_accept_language(headers, accepted_languages):
+    headers_split = headers.split(',')
+    return [header.strip() for header in headers_split if header.strip() in accepted_languages]
+
+
+test_headers = "en-US, fr-CA, fr-FR"
+test_accepted = ["fr-FR", "en-US"]
+expected = ["en-US", "fr-FR"]
+assert parse_accept_language(test_headers, test_accepted) == expected, f"actual: {parse_accept_language(test_headers, test_accepted)}"

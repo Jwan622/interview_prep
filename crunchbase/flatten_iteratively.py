@@ -1,6 +1,6 @@
 # I like my other solution in the other file better
 def flatten_dict_iteratively(d, sep='_'):
-    dict_flattened = {}
+    final = {}
 
     # Stack for keeping track of iteration through nested dictionaries
     stack = [((), d)]
@@ -18,9 +18,9 @@ def flatten_dict_iteratively(d, sep='_'):
                 stack.append((path + (k,), v))
             else:
                 print('in else and this is what the sep.join looks like', sep.join((path + (k,))))
-                dict_flattened[sep.join((path + (k,)))] = v
+                final[sep.join((path + (k,)))] = v
 
-    return dict_flattened
+    return final
 
 # Example dictionary
 data = {
