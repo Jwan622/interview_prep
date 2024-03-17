@@ -10,11 +10,11 @@ def initialize_board():
         # to address a particular position:
         cell = board[row_index][column_index]
     """
-    return [[' ' for _ in range(7)] for _ in range(6)]
+    return [[' ' for _ in range(7)] for _ in range(6)] # this makes a 7w x 6L board
 
 
 def print_board(board):
-    print("\n".join(str(row_index) + " | " + " | ".join(row) + " |" for row_index, row in enumerate(board)))
+    print("\n".join(str(row_index) + " | " + " | ".join(row) + " |" for row_index, row in enumerate(board))) # the structure of this line is odd but two | surround a " | ".join(row). for every space in the board, attach a " \ " after it so there are two spaces in between the bars. For the first " | " there is a " " after it so 2 spaces again.
     print("- " * 16)
     print("    0   1   2   3   4   5   6\n")
 

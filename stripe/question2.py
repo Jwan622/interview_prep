@@ -77,33 +77,44 @@ def count_switches(input_switches):
     longest_consec_ones = len(max(input_switches.split('0'), key=lambda x: len(x)))
     print('lco: ', longest_consec_ones)
 
-    longest_consec_zeroes = len(max(input_switches.split('1'), key=lambda x: len(x)))
-    print('lcz: ', longest_consec_zeroes)
+    # longest_consec_zeroes = len(max(input_switches.split('1'), key=lambda x: len(x)))
+    # print('lcz: ', longest_consec_zeroes)
+
+    longest_consec_zeroes = -1
+    current_group_len = -1
+    for letter in input_switches:
+        if letter == '0':
+            current_group_len += 1
+            if current_group_len > longest_consec_zeroes:
+
+                longest_consec_zeroes += 1
+        else:
+            current_group_len = 0
 
     split_groups = []
     current_char = input_switches[0]
     current_group = current_char
-    for index, char in enumerate(input_switches):
-        if index == 0 or index >= len(input_switches) - 2:
-            continue
-
-        if char == current_char:
+    for index in range(1, len(input_switches) - 2):
+        if input_switches[index] == current_char:
             current_group += current_char
         else:
             split_groups.append(current_group)
-            current_char = char
+            current_char = input_switches[index]
             current_group = current_char
 
     split_groups.append(current_group)
 
-    holder = []
+    min_zeroes = float('inf') # you can reassign this and use this to compare numbers but adding to this just results in -inf
+    max_combined_length_of_ones = -1
     for index in range(1, len(split_groups) - 2):
         if all(ele == '0' for ele in split_groups[index]):
             combined_length = len(split_groups[index - 1]) + len(split_groups[index + 1])
             zeros_to_flip = len(split_groups[index])
-            holder.append((combined_length, zeros_to_flip))
-    min_num_zeros_to_flip = max(holder, key=lambda len_tuple: (len_tuple[0], -len_tuple[1]))[1] # notice the tuple for secondary sort and notice the negation.
-    return [number_of_ones, longest_consec_ones, longest_consec_zeroes, min_num_zeros_to_flip]
+            if combined_length >= max_combined_length_of_ones:
+                min_zeroes = zeros_to_flip if zeros_to_flip < min_zeroes else min_zeroes
+                max_combined_length_of_ones = combined_length
+    # min_num_zeros_to_flip = max(holder, key=lambda len_tuple: (len_tuple[0], -len_tuple[1]))[1] # notice the tuple for secondary sort and notice the negation.
+    return [number_of_ones, longest_consec_ones, longest_consec_zeroes, min_zeroes]
 
 test_string = "11001101111000000111"
 number_of_ones = 11

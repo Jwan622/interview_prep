@@ -39,35 +39,68 @@
 
 # parse_accept_language("en-US", ["en-US", "fr-CA"])
 # returns: ["en-US"]
+# import re
+#
+# def validate(header):
+#     return True if len(header) > 0 and header.find('-') >= 0 else False
+#
+# def validate_whole_header(header):
+#     split_header = header.split(',')
+#     if all(re.search(r'^[a-zA-Z]{2}-[a-zA-Z]{2}$', header.strip()) for header in split_header):
+#         print('regex matched!')
+#         return True
+#     return False
+#
+#
+# def normalize(header):
+#     header = header.strip()
+#     left_header, right_header = header.split('-')
+#     left_header = left_header.lower()
+#     right_header = right_header.upper()
+#     header = '-'.join([left_header, right_header])
+#     return header
+#
+# def parse_accept_language(headers, accepted_languages):
+#     if validate_whole_header(headers):
+#         headers_split = [normalize(header) for header in headers.split(',')]
+#         deduped = []
+#         [deduped.append(header) for header in headers_split if header not in deduped]
+#         # deduped = list(set(headers_split)) # but htis does not keep order
+#         return [header for header in deduped if header in accepted_languages]
+#     return []
 
-import re
 
-def validate(header):
-    return True if len(header) > 0 and header.find('-') >= 0 else False
+def validate(headers):
+    validated = []
+    headers = ' '.join(headers).split()
+    for header in headers:
+        if header.find('-') >= 0:
+            validated.append(header)
 
-def validate_whole_header(header):
-    split_header = header.split(',')
-    if all(re.search(r'^[a-zA-Z]{2}-[a-zA-Z]{2}$', header.strip()) for header in split_header):
-        print('regex matched!')
-        return True
-    return False
+    return validated
 
 
 def normalize(header):
-    left_header, right_header = header.split('-')
-    left_header = left_header.lower()
-    right_header = right_header.upper()
-    header = '-'.join([left_header, right_header])
-    return header.strip()
+    left_side, right_side = header.split('-')
+    left_side = left_side.lower()
+    right_side = right_side.upper()
+    return '-'.join((left_side, right_side))
 
-def parse_accept_language(headers, accepted_languages):
-    if validate_whole_header(headers):
-        headers_split = [normalize(header) for header in headers.split(',')]
-        deduped = []
-        [deduped.append(header) for header in headers_split if header not in deduped]
-        # deduped = list(set(headers_split))
-        return [header for header in deduped if header in accepted_languages]
-    return []
+def dedupe(headers):
+    deduped = []
+    [deduped.append(header) for header in headers if header not in deduped]
+    return deduped
+
+
+def parse_accept_language(headers, accepted):
+    split_headers = [normalize(header.strip()) for header in validate(headers.split(','))]
+    deduped = dedupe(split_headers)
+
+    print('split headers: ', split_headers)
+
+    return [header for header in deduped if header in accepted]
+
+
 
 
 test_headers = "en-US, fr-CA, fr-FR"
@@ -86,16 +119,16 @@ test_accepted = ["fr-FR", "en-US"]
 expected = ["en-US", "fr-FR"]
 assert parse_accept_language(test_headers, test_accepted) == expected, f"actual: {parse_accept_language(test_headers, test_accepted)}"
 
-#
-# test_headers = "en-US, fr-CA, fr,,, 123, fr-FR, EN-US,"
-# test_accepted = ["fr-FR", "en-US"]
-# expected = ["en-US", "fr-FR"]
-# assert parse_accept_language(test_headers, test_accepted) == expected, f"actual: {parse_accept_language(test_headers, test_accepted)}"
 
 test_headers = "en-US, fr-CA, fr,,, 123, fr-FR, EN-US,"
 test_accepted = ["fr-FR", "en-US"]
-expected = []
+expected = ["en-US", "fr-FR"]
 assert parse_accept_language(test_headers, test_accepted) == expected, f"actual: {parse_accept_language(test_headers, test_accepted)}"
+
+# test_headers = "en-US, fr-CA, fr,,, 123, fr-FR, EN-US,"
+# test_accepted = ["fr-FR", "en-US"]
+# expected = []
+# assert parse_accept_language(test_headers, test_accepted) == expected, f"actual: {parse_accept_language(test_headers, test_accepted)}"
 
 # follow-ups
 '''
