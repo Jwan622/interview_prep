@@ -22,6 +22,14 @@ df = df[df['founded'] < pd.Timestamp('1800-01-01')]  to make new dataframe with 
 to groupby and sort and take top 5:
 new_df = df.groupby(by=df['ProductID'], as_index=False)['Total_Rev'].sum()
 top_products = new_df.sort_values(by='Total_Rev', ascending=False).head(5)
+
+- to convert to timestamp periods
+def convert(date):
+    year, month, day = [int(date_piece) for date_piece in date.split('T')[0].split('-')]
+    return pd.Period(year=year, month=month, day=day, freq='D')
+
+data['founded'] = data['founded'].apply(convert)
+before_1900 = data[data['founded'].dt.year < 1900]
 '''
 
 # 1. Find the top 3 cities with the highest population.
