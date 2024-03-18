@@ -92,6 +92,7 @@ def drop_chip(board, column_to_drop, player_mark):
             board[row_index][column_to_drop] = player_mark
             return row_index
     return None
+
 if __name__ == "__main__":
     main()
 
