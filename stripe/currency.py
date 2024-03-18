@@ -53,11 +53,11 @@ def conversion(from_curr, to_curr):
         return rate_lookups[from_curr][to_curr]
     else:
         for first_rate_key in rate_lookups[from_curr].keys():
-            for nested_rate_key in rate_lookups[first_rate_key].keys():
-                if nested_rate_key == to_curr:
-                    print('nested rate key', nested_rate_key)
+            for indirect_rate_key in rate_lookups[first_rate_key].keys():
+                if indirect_rate_key == to_curr:
+                    print('indirect rate key', indirect_rate_key)
                     print('first rate key', first_rate_key)
-                    return round(rate_lookups[first_rate_key][nested_rate_key] * rate_lookups[from_curr][first_rate_key], 3)
+                    return round(rate_lookups[first_rate_key][indirect_rate_key] * rate_lookups[from_curr][first_rate_key], 3)
 
         return True
 
