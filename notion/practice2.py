@@ -16,7 +16,7 @@ data = {
 
 df = pd.DataFrame(data)
 print("Original DataFrame:", df)
-df['timestamp'] = pd.to_datetime(df['timestamp'])
+
 
 # this is how you filter: df = df[(df['Date'] > "2018-01-01") & (df['Date'] < "2019-07-01")]
 '''

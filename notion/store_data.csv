@@ -1,5 +1,5 @@
 Date,Product,Price,Quantity,Store
-2023-01-01,WidgetA,10,2,Store1
+2023-01-01,WidgetA,20,2,Store1
 2023-01-01,WidgetB,20,1,Store2
 2023-01-02,WidgetA,10,3,Store1
 2023-01-02,WidgetC,15,2,Store3
@@ -9,3 +9,7 @@ Date,Product,Price,Quantity,Store
 2023-01-04,WidgetB,20,1,Store2
 2023-01-05,WidgetC,15,3,Store3
 2023-01-05,WidgetA,10,2,Store1
+2023-01-05,WidgetD,30,1,Store1
+2023-01-05,WidgetD,30,1,Store1
+2023-01-05,WidgetD,30,1,Store1
+2000-01-05,WidgetD,10,2,Store1
