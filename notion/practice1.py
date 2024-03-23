@@ -30,6 +30,22 @@ def convert(date):
 
 data['founded'] = data['founded'].apply(convert)
 before_1900 = data[data['founded'].dt.year < 1900]
+
+- drop dupes
+If you want to remove duplicates based on specific columns, you can pass the column names as a list to the subset parameter:
+df = df.drop_duplicates(subset=['column1', 'column2'])
+Additionally, you can control which duplicates to keep:
+first: (default) Drop duplicates except for the first occurrence.
+last: Drop duplicates except for the last occurrence.
+False: Drop all duplicates.
+Here’s an example of keeping only the last occurrence:
+df = df.drop_duplicates(subset=['column1', 'column2'], keep='last')
+After removing duplicates, the DataFrame's index may be disordered or have gaps, you can reset the index if necessary:
+df = df.reset_index(drop=True)
+
+- filter last 30 days of data
+past_30_days = activity[activity.activity_date > pd.to_datetime('2019-08-16', format='%Y-%m-%d') - pd.to_timedelta("30day")]
+
 '''
 
 # 1. Find the top 3 cities with the highest population.

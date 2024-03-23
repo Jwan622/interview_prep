@@ -70,7 +70,7 @@ data = {
 }
 
 df = pd.DataFrame(data)
-grouped_df = df.groupby(['countries', 'companies']).sum()
+grouped_df = df.groupby(['countries', 'companies']).agg(summed_amount=('amount', 'sum'))
 print('grouped df \n', grouped_df)
 
 # Sort each group within each country by the summed amount in descending order
@@ -87,10 +87,20 @@ apply can be used on both Series and DataFrame objects. When used on a DataFrame
 # print('final \n', final)
 
 # or this... which I think actually makes more sense to me:
-sorted_df = grouped_df.reset_index().sort_values(by=['countries', 'amount'], ascending=[True, False])
+# sorted_df = grouped_df.sort_values(by=['countries', 'amount'], ascending=[True, False])
+# print('sorted_df \n', sorted_df)
+# sorted_df.reset_index(inplace=True)
+# top_companies = sorted_df.groupby('countries').head(3)
+# print('top companies \n', top_companies)
+# # If you only want to show the countries and companies in the final DataFrame
+# final_df = top_companies[['countries', 'companies']]
+# print('final df:\n', final_df)
+
+
+sorted_df = grouped_df.sort_values(by=['countries', 'summed_amount'], ascending=[True, False])
 print('sorted_df \n', sorted_df)
-top_companies = sorted_df.groupby('countries').head(3)
-print('top companies \n', top_companies)
-# If you only want to show the countries and companies in the final DataFrame
-final_df = top_companies[['countries', 'companies']]
-print('final df:\n', final_df)
+sorted_df.reset_index(inplace=True)
+top_companies_3 = sorted_df.groupby('countries').head(3)
+print('top_companies_3 \n', top_companies_3)
+just_countries_and_company = top_companies_3[['countries', 'companies']]
+print('just_countries_and_company \n', just_countries_and_company)
