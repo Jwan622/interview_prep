@@ -6,23 +6,32 @@ Given an array of intervals where intervals[i] = [starti, endi], merge all overl
 
 def create_intervals(intervals):
   intervals.sort(key=lambda x: (x[0], x[1]))
-
-  final_intervals = []
-  possible_lowest, possible_highest = intervals[0]
-  for interval in intervals:
-    low, high = interval
-
-    if low <= possible_highest:
-      possible_highest = high
-
-    if low > possible_highest:
-      final_intervals.append([possible_lowest, possible_highest])
-      possible_lowest = low
-      possible_highest = high
-
-  final_intervals.append([possible_lowest, possible_highest])
-  print('final_intervals: ', final_intervals)
+  final_intervals = [intervals[0]]
+  for current in intervals[1:]:
+    last_interval = final_intervals[-1]
+    print('last_interval: ', last_interval)
+    if last_interval[1] >= current[0]:
+      last_interval[1] = max(current[1], last_interval[0])
+    else:
+      final_intervals.append(current)
+  print('final-intervals ', final_intervals)
   return final_intervals
+  # final_intervals = []
+  # possible_lowest, possible_highest = intervals[0]
+  # for interval in intervals:
+  #   low, high = interval
+  #
+  #   if low <= possible_highest:
+  #     possible_highest = high
+  #
+  #   if low > possible_highest:
+  #     final_intervals.append([possible_lowest, possible_highest])
+  #     possible_lowest = low
+  #     possible_highest = high
+  #
+  # final_intervals.append([possible_lowest, possible_highest])
+  # print('final_intervals: ', final_intervals)
+  # return final_intervals
 
 
 intervals1 = [[1,3],[2,6],[8,10],[15,18]]
