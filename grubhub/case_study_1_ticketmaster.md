@@ -116,21 +116,35 @@ The API gateway then, after handling basic authentication and rate limiting, for
 The Event CRUD Service then queries the Events DB for the event, venue, and performer information and returns it to the client.
 
 ## Users should be able to book tickets
+This time we have a bit more to consider though. We need to ensure that the ticket is locked for the user while they are checking out. We also need to ensure that if the user abandons the checkout process, the ticket is released for other users to purchase. Finally, we need to ensure that if the user completes the checkout process, the ticket is marked as sold and the booking is confirmed. Here are a couple ways we could do this:
 
 ### Bad solution
+This involves locking  row in the database
 
 A bad solution many candidates propose for this problem is to use database locking. In this method, the database is directly utilized to lock a specific ticket row, ensuring exclusive access to the first user trying to book it. This is typically done using the SELECT FOR UPDATE statement in PostgreSQL, which locks the selected row(s) as part of a database transaction. The lock on the row is maintained until the transaction is either committed or rolled back. During this time, other transactions attempting to select the same row with SELECT FOR UPDATE will be blocked until the lock is released. This ensures that only one user can process the ticket booking at a time.
 
 When it comes to unlocking, there are two cases we need to consider:
 
-If the user finalizes the purchase, the transaction is committed, the database lock is released, and the ticket status is set to "Booked".
-If the user takes too long or abandons the purchase, the system has to rely on their subsequent actions or session timeouts to release the lock. This introduces the risk of tickets being locked indefinitely if not appropriately handled.
+- If the user finalizes the purchase, the transaction is committed, the database lock is released, and the ticket status is set to "Booked".
+- If the user takes too long or abandons the purchase, the system has to rely on their subsequent actions or session timeouts to release the lock. This introduces the risk of tickets being locked indefinitely if not appropriately handled.
 
-Challenges
+#### Challenges for database row locking
 
 Why is this a bad idea? Well, database locks are meant to be used for short periods of time (a single, near-instant, transaction). Keeping a transaction open for a long period (like the 5-minute lock duration) is generally not advisable. It can strain database resources and increase the risk of lock contention and deadlocks. Additionally, SQL DBs like PostgreSQL doesn't natively support lock timeouts within transactions. Implementing a timeout would require application-level management and additional complexity. Finally, this approach may not scale well under high load, as prolonged locks can lead to increased wait times for other users and potential performance bottlenecks. Handling edge cases, such as application crashes or network issues, becomes more challenging, as these could leave locks in an uncertain state.
 
 
+### Better solution with REdis
+
+Approach
+A great solution is to implement a distributed lock with a TTL (Time To Live) using a distributed system like Redis. Redis is an in-memory data store that supports distributed locks and is well-suited for high-concurrency environments. It offers high availability and can be used to implement a distributed lock mechanism for the ticket booking process. Here is how it would work:
+
+When a user selects a ticket, acquire a lock in Redis using a unique identifier (e.g., ticket ID) with a predefined TTL (Time To Live). This TTL acts as an automatic expiration time for the lock.
+If the user completes the purchase, the ticket's status in the database is updated to "Booked", and the lock in Redis is manually released by the application after the TTL.
+If the TTL expires (indicating the user did not complete the purchase in time), Redis automatically releases the lock. This ensures that the ticket becomes available for booking by other users without any additional intervention.
+Now our Ticket table only has two states: available and booked. Locking of reserved tickets is handled entirely by Redis.
+
+#### Challenges
+The main downside comes with handling failures. If our lock goes down for any reason, then we have a period of time where user experience is degraded. Note that we will still never have a "double booking" since our database will use OCC or any other concurrency control to ensure this. The downside is just that users can get an error after filling out their payment details if someone beats them to it. This sucks, but I would argue that it is a better outcome than having all tickets appear unavailable (as would be the case if the cron job in our previous solution failed).
 
 ### Solution
 ![ticket_master_distributed_lock.png](images/ticket_master_distributed_lock.png)

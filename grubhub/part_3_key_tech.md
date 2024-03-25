@@ -52,19 +52,21 @@ Sometimes you're tasked with implementing full-text search as a feature of your 
 SELECT * FROM documents WHERE document_text LIKE '%search_term%'
 ```
 
-This query is slow and inefficient, and it doesn't scale well because it requires a full table scan. Search optimized databases, on the other hand, are specifically designed to handle full-text search. They use techniques like indexing, tokenization, and stemming to make search queries fast and efficient. In short, they work by building what are called inverted indexes. Inverted indexes are a data structure that maps from words to the documents that contain them. This allows you to quickly find documents that contain a given word. A simple example of an inverted index might look like this:
+This query is slow and inefficient, and it doesn't scale well because it requires a full table scan. Search optimized databases, on the other hand, are specifically designed to handle full-text search. They use techniques like indexing, tokenization, and stemming to make search queries fast and efficient. In short, they work by building what are called inverted indexes. An inverted index is a fundamental data structure used in search engines to enable fast full-text searches. At its core, an inverted index reverses the document-to-word relationship to a word-to-document relationship. Here’s how it works and why it’s effective for search operations:
 
-```
-{
-  "word1": [doc1, doc2, doc3],
-  "word2": [doc2, doc3, doc4],
-  "word3": [doc1, doc3, doc4]
-}
-```
+### How an Inverted Index Works
+In a traditional forward index, you might list each document along with the words it contains. An inverted index, on the other hand, lists each word along with the documents that contain that word.
+
+The key idea is to allow quick lookup of documents that contain a specific word, rather than starting with a document and searching for words within it.
+
+### Structure of an Inverted Index
+Conceptually, an inverted index is like a dictionary or a map data structure, where:
+- Keys are the words found in the documents.
+- Values are lists or sets of document identifiers where those words appear.
 
 Examples here are straight forward, consider an application like Ticketmaster that needs to search through a large number of events to find relevant results. Or a social media platform like Twitter that needs to search through a large number of tweets to find relevant results. In either case, a search optimized database would be an optimal choice.
 
-Things you should know about search optimized databases
+### Things you should know about search optimized databases
 Inverted Indexes: As just mentioned, search optimized databases use inverted indexes to make search queries fast and efficient. An inverted index is a data structure that maps from words to the documents that contain them. This allows you to quickly find documents that contain a given word.
 
 Tokenization: Tokenization is the process of breaking a piece of text into individual words. This allows you to map from words to documents in the inverted index.
@@ -77,6 +79,12 @@ Fuzzy Search: Fuzzy search is the ability to find results that are similar to a 
 Example:
 The clear leader in this space is Elasticsearch. Elasticsearch is a distributed, RESTful search and analytics engine that is built on top of Apache Lucene. It is designed to be fast, scalable, and easy to use. It is the most popular search optimized database and is used by companies like Netflix, Uber, and Yelp. Elasticsearch has hosted offerings like Elastic Cloud and AWS OpenSearch which make it easy to get started.
 
+### Advantages of Inverted Indexes
+Efficiency in Search: Instead of scanning each document for a particular word (which would be slow and inefficient), the search engine can directly access the list of documents that contain the word in the index.
+
+Speed: Lookup operations in an inverted index are typically very fast, often implemented with hash tables or search trees, allowing near-instantaneous access to the indexed data.
+
+Scalability: Inverted indexes support efficient updates and additions. When new documents are added, the index can be updated by adding entries for new words or updating the list of documents for existing words.
 
 ## API Gateway
 
