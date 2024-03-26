@@ -56,9 +56,15 @@ sum = df['amounts'].sum()
 
 6. fill in missing values with NaN then 0
 ```python3
-# Problem 1: Filling missing 'amount' with 0
+# Problem 1: Filling missing 'amount' with 0 after converting a column to numeric
 # Replace non-numeric values with NaN, then fill NaN with 0
 df['amount'] = pd.to_numeric(df['amount'], errors='coerce').fillna(0)
+```
+
+6.5. Fill in missing values with median of that year.
+
+```python3
+df.fillna({'Year' : df['Year'].median()}, inplace=True)
 ```
 
 7. drop rows where value is missing
@@ -78,4 +84,10 @@ subset: Allows you to specify a subset of columns or rows to consider when dropp
 
 ```python3
 df_dropped = df.dropna(thresh=2)
+```
+
+9. convert a column of mix types to numeric and then int
+
+```python3
+df['Year'] = pd.to_numeric(df['Year']).astype(int)
 ```
