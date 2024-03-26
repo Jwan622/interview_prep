@@ -15,7 +15,7 @@ data = {
 }
 
 df = pd.DataFrame(data)
-print("Original DataFrame:", df)
+print("Original DataFrame: \n", df)
 
 
 # this is how you filter: df = df[(df['Date'] > "2018-01-01") & (df['Date'] < "2019-07-01")]
@@ -29,7 +29,7 @@ df_filtered = df[df['date'].dt.strftime('%Y-%m') == '2014-01']
 # filter by single year
 df_filtered = df[df['date'].dt.strftime('%Y') == '2014']
 '''
-# df = df[df['timestamp'].dt.strftime('%Y') < '2000']
+df['timestamp'] = pd.to_datetime(df['timestamp'])
 df = df[df['timestamp'].dt.year < 2000]
 print('time filtered df: \n', df)
 df['discounted_dollars'] = df.apply(lambda x: x['Price'] * x['Discount'] if x['Type'] in ['Fruit', 'Vege'] else 0, axis=1).round(2)

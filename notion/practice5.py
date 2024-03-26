@@ -3,7 +3,7 @@ import pandas as pd
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)
 
-data = pd.read_json('sample_data.json', lines=True)
+data = pd.read_json('pandas_data/sample_data.json', lines=True)
 print('data', data)
 
 

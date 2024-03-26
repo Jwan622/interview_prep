@@ -26,7 +26,7 @@ import pandas as pd
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', None)
 
-data = pd.read_json('sample_data.json', lines=True)
+data = pd.read_json('pandas_data/sample_data.json', lines=True)
 print('data', data)
 ```
 
@@ -35,4 +35,47 @@ print('data', data)
 Use loc to modify the original DataFrame directly, if that's what you intend. This makes it clear that you are modifying the original DataFrame:
 ```
 df.loc[df['Column'] > value, 'NewColumn'] = some_value
+```
+
+
+4. top 5 users by action sorted
+```python3
+grouped_by = df.groupby(['user_id']).agg(action_count=("action", 'count'))
+print('grouped_by \n', grouped_by)
+
+top_5_active_users = grouped_by.sort_values(by="action_count", ascending=False).head(5)
+print('top_5_active_users \n', top_5_active_users)
+```
+
+5. ignoring erros in a column and just getting the numeric values:
+
+```python3
+df['amounts'] = pd.to_numeric(df['amounts'], errors='coerce')
+sum = df['amounts'].sum()
+```
+
+6. fill in missing values with NaN then 0
+```python3
+# Problem 1: Filling missing 'amount' with 0
+# Replace non-numeric values with NaN, then fill NaN with 0
+df['amount'] = pd.to_numeric(df['amount'], errors='coerce').fillna(0)
+```
+
+7. drop rows where value is missing
+
+```python3
+# Problem 2: Dropping rows where 'country' is missing
+df_cleaned = df.dropna(subset=['country'])
+```
+
+8. drop row where 2 values are missing with thres
+
+how: Determines if a row or column is dropped when there are missing values.
+how='any' (default): Drop the row/column if any value is NaN.
+how='all': Drop the row/column only if all values are NaN.
+thresh: Specifies a minimum number of non-missing values required to keep a row/column. For example, thresh=3 means a row/column needs at least three non-missing values to be retained.
+subset: Allows you to specify a subset of columns or rows to consider when dropping. For instance, dropna(subset=['col1', 'col2']) will only consider col1 and col2 when determining which rows to drop.
+
+```python3
+df_dropped = df.dropna(thresh=2)
 ```

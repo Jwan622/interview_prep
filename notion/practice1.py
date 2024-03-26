@@ -5,7 +5,7 @@ pd.set_option('display.max_columns', None)  # No column limit
 pd.set_option('display.max_rows', None)  # No row limit
 pd.set_option('display.width', None)  # Auto-detect the display width
 
-df = pd.read_json('sample_data.json', lines=True)
+df = pd.read_json('pandas_data/sample_data.json', lines=True)
 print("original data frame:\n", df)
 '''
 Practice Questions
@@ -95,15 +95,16 @@ def round_coordinates(coord):
     return [round(c, 3) for c in coord]
 
 df['gps_coordinates'] = df['gps_coordinates'].apply(round_coordinates)
-print(f"rounded to 3 decimal places: {df['gps_coordinates']}")
+print(f"rounded to 3 decimal places \n: {df['gps_coordinates']}")
 
 # 10. find city name and country with highest average temperate
-city_with_highest_temp = df.loc[df['average_temperature'].idxmax()]
-print('city with highest temp: ', city_with_highest_temp['name'], city_with_highest_temp['country'])
+city_with_highest_temp = df.loc[df['average_temperature'].idxmax(), ['name', 'country']]
+
+print('city with highest temp: \n', city_with_highest_temp)
 
 #11. find city name and country with lowest transit tripcs per capita
 city_with_lowest_transit_trips = df.loc[df['transit_trips_per_capita'].idxmin()]
-print(f"city with lowest transit trips", city_with_lowest_transit_trips['name'], city_with_lowest_transit_trips['country'], city_with_lowest_transit_trips['transit_trips_per_capita'])
+print(f"city with lowest transit trips \n", city_with_lowest_transit_trips['name'], city_with_lowest_transit_trips['country'], city_with_lowest_transit_trips['transit_trips_per_capita'])
 
 #12. highest car ownership rate but in percentage format
 

@@ -4,7 +4,7 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
 pd.set_option('display.width', None)
 
-df = pd.read_csv('store_data.csv')
+df = pd.read_csv('pandas_data/store_data.csv')
 df['Total_Revenue'] = df['Price'] * df['Quantity']
 df['Date'] = pd.to_datetime(df['Date'])
 print('df should have date', df)

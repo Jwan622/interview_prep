@@ -8,7 +8,7 @@ import pandas as pd
 # A couple ways:
 
 # Load the CSV file into a DataFrame
-df = pd.read_csv('store_data.csv')
+df = pd.read_csv('pandas_data/store_data.csv')
 
 df['Total Sales'] = df['Price'] * df['Quantity']
 print('df with total sales \n', df)

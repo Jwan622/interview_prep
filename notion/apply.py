@@ -10,6 +10,7 @@ df = pd.DataFrame({
 def celsius_to_fahrenheit(x):
     return x * 9/5 + 32
 
+# apply default applies to every value down axis 0 which is the column
 df['Temperature_C'] = df['Temperature_C'].apply(celsius_to_fahrenheit)
 print('df: \n', df)
 

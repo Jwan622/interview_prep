@@ -16,15 +16,15 @@ pd.set_option('display.max_columns', None)
 pd.set_option("display.max_rows", None)
 pd.set_option('display.width', None)
 
-df = pd.read_csv("./notion_practice.csv")
+df = pd.read_csv("pandas_data/notion_practice.csv")
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 
 #1.  number of actions user has performed
 grouped_by = df.groupby(['user_id']).agg(action_count=("action", 'count'))
-print('grouped_by', grouped_by)
+print('grouped_by \n', grouped_by)
 print('grouped_by type', type(grouped_by))
 top_5_active_users = grouped_by.sort_values(by="action_count", ascending=False).head(5)
-print('top_5_active_users', top_5_active_users)
+print('top_5_active_users \n', top_5_active_users)
 
 #2 for each type action, find top 3 more frequently interacted documents
 just_viewed_actions = df[df['action'] == 'viewed']

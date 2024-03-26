@@ -24,7 +24,7 @@ def find_manager_employees(employee: pd.DataFrame) -> pd.DataFrame:
   # Group by 'managerId' and count the number of employees for each manager
   managers_employee_count = employee.groupby('managerId').agg({'id': 'count'}).rename(columns={'id': 'employee_count'})
   print('managers employee with count \n', managers_employee_count)
-  # Find managers with more than 5 employees
+  # Find managers with more than 5 employees using boolean indexing
   managers_with_more_than_five = managers_employee_count[managers_employee_count['employee_count'] >= 5]
   print('managers with more than 5\n', managers_with_more_than_five)
 
