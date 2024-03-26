@@ -91,3 +91,17 @@ df_dropped = df.dropna(thresh=2)
 ```python3
 df['Year'] = pd.to_numeric(df['Year']).astype(int)
 ```
+
+
+10. Filter column by containing word?
+
+```python3
+the_series = df['Title'].str.contains('The', na=False)
+```
+
+using regex:
+
+```python3
+regex_pattern = r'\bThe\b'
+df[df['Title'].str.contains(regex_pattern, na=False, regex=True)]
+```

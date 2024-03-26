@@ -9,6 +9,9 @@ data = {
 }
 
 df = pd.DataFrame(data)
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+pd.set_option('display.width', None)
 
 # count is null in a column
 print('missing years should be 1: ', df['Year'].isna().sum())
@@ -40,3 +43,20 @@ df['Title_Length'] = df['Title'].apply(lambda x: len(x))
 print('added title length: \n', df)
 
 
+# hmmm let's see what this does first
+# dates = pd.date_range('1/1/2001', periods=12, freq="MS")
+# print('dates: ', dates)
+# df = pd.DataFrame({"jA": 5*np.arange(len(dates))+2}, index=dates)
+# print('df head: \n', df.head())
+# group the books by decade of publication
+
+# anyway let's group by decade for our original dataframe now and count number of books in each decade
+df['Decade'] = df['Year'] // 10 * 10
+print('df with decade: \n', df)
+grouped_by = df.groupby('Decade').agg({'Title': 'count'})
+print('titles per decade: \n', grouped_by)
+
+
+# Which titles contain the word The?
+the_series = df['Title'].str.contains('The', na=False)
+print('the series: \n', the_series)
