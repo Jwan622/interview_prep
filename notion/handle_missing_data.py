@@ -60,3 +60,7 @@ print('titles per decade: \n', grouped_by)
 # Which titles contain the word The?
 the_series = df['Title'].str.contains('The', na=False)
 print('the series: \n', the_series)
+
+# rows that contain the
+df = df[df['Title'].str.contains('The', na=False)]
+print('rows that contain the \n', df)

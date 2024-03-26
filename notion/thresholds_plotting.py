@@ -24,7 +24,9 @@ Datetime Index: Setting 'Date' as the index of your DataFrame and ensuring it's 
 Resampling: The resample method is specifically designed for time series data. When you resample the data by month (using 'M' or 'ME' for month end in resample('ME')), Pandas groups the data into time periods based on the datetime index. It then aggregates the data (with .sum() in this case) for each of these time periods.
 '''
 new_df = df.set_index('Date')  # Set the datetime column as the index
-# Use resample to sum monthly revenue
+print('new df with date index: \n', new_df)
+# Use resample to sum monthly revenue and group it by month start.
+# resample('MS'): The resample() function is used to change the frequency of the time series data. The 'MS' argument stands for "Month Start". When you resample with this frequency, Pandas groups the data into monthly buckets, starting at the beginning of each month.
 monthly_revenue = new_df['Total_Rev'].resample('MS').sum()
 print('Monthly Revenue with Resample:\n', monthly_revenue)
 print('plotting: \n')
@@ -35,10 +37,10 @@ plt.xlabel('Month')
 plt.show()
 
 # 2. top grossing products
-new_df = df.groupby(by=df['ProductID'], as_index=False)['Total_Rev'].sum()
+new_df = df.groupby(by=df['ProductID']).agg(grouped_prod_rev=('Total_Rev', 'sum'))
 
 # Sort the revenues in descending order and get the top 5
-top_products = new_df.sort_values(by='Total_Rev', ascending=False).head(5)
+top_products = new_df.sort_values(by='grouped_prod_rev', ascending=False).head(5)
 
 print('Top Grossing Products:\n', top_products)
 
@@ -46,7 +48,6 @@ print('Top Grossing Products:\n', top_products)
 Sorting Values Issue: The line final = grouped.sort_values(by=[df['Date'].dt.month, 'Total_Rev'], ascending=[True, False]) attempts to use df['Date'].dt.month in the sort_values method, which is incorrect. The by parameter of sort_values expects column names from the DataFrame on which it's called. Since df['Date'].dt.month is not a column name in grouped, this will cause an error. Instead, you should sort by the column names that exist in grouped after the groupby operation.
 '''
 # 3. max product each month
-
 df['Month'] = df['Date'].dt.month
 grouped = df.groupby(by=['Month', 'ProductID'])['Total_Rev'].sum().reset_index()
 # now sort

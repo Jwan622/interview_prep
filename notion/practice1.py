@@ -124,7 +124,7 @@ print(f"city with lowest transit trips \n", city_with_lowest_transit_trips['name
 # 14. how many cities were founded before 1800? This is interesting because pands can't handle certain rows before 1677 should be 14 cities
 df['founded'] = pd.to_datetime(df['founded'], errors='coerce')
 # Filter cities founded before 1800
-print('df founded using errors coerce', df['founded'])
+print('df founded using errors coerce \n', df['founded'])
 
 # the outer df will only return rows that are True
 # the inner comparison:
@@ -134,13 +134,11 @@ print('df founded using errors coerce', df['founded'])
 # If you want to retrieve the entire row(s) where the condition df['founded'] < pd.Timestamp('1800-01-01') evaluates to True, you can use boolean indexing. That's what the outer df is doing
 cities_before_1800 = df[df['founded'] < pd.Timestamp('1800-01-01')]
 print('cities before 1800', cities_before_1800)
-
 # Filter cities with NaT values (i.e., invalid datetime strings)
 na_values = df['founded'].isna()
-print("na_values", na_values.sum())
+print("na_values", na_values.sum()) # sum up all the null values in the column
 # Count the number of cities founded before 1800
 num_cities_before_1800 = len(cities_before_1800) + na_values.sum()
-
 print("Number of cities founded before 1800:", num_cities_before_1800)
 
 

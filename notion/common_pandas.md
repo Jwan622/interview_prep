@@ -100,8 +100,11 @@ the_series = df['Title'].str.contains('The', na=False)
 ```
 
 using regex:
-
 ```python3
 regex_pattern = r'\bThe\b'
 df[df['Title'].str.contains(regex_pattern, na=False, regex=True)]
 ```
+
+# Using regex to find titles that do not contain the word 'The'
+regex_pattern = r'\bThe\b'
+books_without_the = df[~df['Title'].str.contains(regex_pattern, na=False, regex=True)]
