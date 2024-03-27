@@ -45,6 +45,8 @@ print(title_counts.head(6))
 #2. how many books did each author release every year
 # what row is that 6?
 df['publication_date'] = pd.to_datetime(df['publication_date'], errors='coerce').dt.year
+# we have to fillna because otherwise we get this error: Cannot convert non-finite values (NA or inf) to integer
+df['publication_year'] = df['publication_date'].fillna(-1).astype(int)
 # let's see the row
 nat_rows = df[df['publication_date'].isna()]
 print('nat rows: \n', nat_rows)
